@@ -156,6 +156,8 @@ export default {
 
   border-radius: 8px;
   font-size: 15px;
+
+  padding-left: 10px;
 }
 
 .register-button {
