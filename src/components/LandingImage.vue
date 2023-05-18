@@ -23,7 +23,7 @@ export default {
 
 <style scoped>
 div {
-  width: 33vw;
+  width: 34vw;
   height: 66vh;
 }
 
