@@ -9,7 +9,16 @@
         <span></span>
         <button class="search-button">구/군</button>
       </div>
-      <button class="myprofile" @click.stop="onClickProfile">
+      <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
+        {{ userInfo.name }}님 안녕하세요!
+        <div v-if="showModal" class="modal" @click.stop="">
+          <profile-menu-item
+            title="로그아웃"
+            event="logout"
+          ></profile-menu-item>
+        </div>
+      </div>
+      <button class="user-menu" @click.stop="onClickProfile" v-else>
         <hamburger-button :clicked="showModal"></hamburger-button>
         <font-awesome-icon :icon="['fas', 'user']" />
         <div v-if="showModal" class="modal" @click.stop="">
@@ -25,6 +34,7 @@
       </button>
     </header>
     <register-modal v-if="openRegisterModal"></register-modal>
+    <login-modal v-if="openLoginModal"></login-modal>
     <div class="bg" @click.stop="onClickBackground"></div>
   </div>
 </template>
@@ -33,7 +43,11 @@
 import HamburgerButton from "./HamburgerButton.vue";
 import ProfileMenuItem from "./ProfileMenuItem.vue";
 import RegisterModal from "@/components/RegisterModal.vue";
+import LoginModal from "@/components/LoginModal.vue";
 import EventBus from "@/util/EventBus.js";
+import { mapActions, mapState } from "vuex";
+
+const userStore = "userStore";
 
 export default {
   name: "MainHeader",
@@ -41,38 +55,56 @@ export default {
     HamburgerButton,
     ProfileMenuItem,
     RegisterModal,
+    LoginModal,
   },
   data() {
     return {
       showModal: false,
       openRegisterModal: false,
+      openLoginModal: false,
     };
   },
+  computed: {
+    ...mapState(userStore, ["isLogin", "userInfo"]),
+  },
+
   created() {
     EventBus.$on("showLoginModal", this.showLoginModal);
     EventBus.$on("showRegisterModal", this.showRegisterModal);
     EventBus.$on("closeRegisterModal", this.closeRegisterModal);
+    EventBus.$on("closeLoginModal", this.closeLoginModal);
+    EventBus.$on("logout", this.logout);
   },
   methods: {
+    ...mapActions(userStore, ["logoutUser"]),
     onClickSido() {
       this.showModal = !this.showModal;
     },
     onClickBackground() {
       this.showModal = false;
       this.openRegisterModal = false;
+      this.openLoginModal = false;
     },
     onClickProfile() {
       this.showModal = !this.showModal;
-    },
-    showLoginModal() {
-      this.showModal = false;
     },
     showRegisterModal() {
       this.showModal = false;
       this.openRegisterModal = true;
     },
+    showLoginModal() {
+      this.showModal = false;
+      this.openLoginModal = true;
+    },
     closeRegisterModal() {
       this.openRegisterModal = false;
+    },
+    closeLoginModal() {
+      this.openLoginModal = false;
+    },
+    logout() {
+      this.logoutUser();
+      this.showModal = false;
     },
   },
 };
@@ -143,7 +175,7 @@ span {
   position: relative;
 }
 
-.myprofile {
+.user-menu {
   position: relative;
   flex: 0 1 auto;
   display: flex;
@@ -159,5 +191,9 @@ span {
   transition: box-shadow 0.2s ease;
   height: 42px;
   width: 77px;
+}
+
+.myprofile {
+  position: relative;
 }
 </style>
