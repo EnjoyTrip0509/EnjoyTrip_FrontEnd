@@ -17,7 +17,7 @@
         <input
           id="password"
           class="register-input"
-          type="text"
+          type="password"
           v-model="user.password"
         />
       </div>
