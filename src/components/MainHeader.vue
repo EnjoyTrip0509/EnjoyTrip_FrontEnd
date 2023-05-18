@@ -51,6 +51,7 @@ export default {
   created() {
     EventBus.$on("showLoginModal", this.showLoginModal);
     EventBus.$on("showRegisterModal", this.showRegisterModal);
+    EventBus.$on("closeRegisterModal", this.closeRegisterModal);
   },
   methods: {
     onClickSido() {
@@ -69,6 +70,9 @@ export default {
     showRegisterModal() {
       this.showModal = false;
       this.openRegisterModal = true;
+    },
+    closeRegisterModal() {
+      this.openRegisterModal = false;
     },
   },
 };

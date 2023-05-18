@@ -9,40 +9,76 @@
     <div class="input-section">
       <div>
         <label for="id">아이디</label>
-        <input id="id" class="register-input" type="text" />
+        <input id="id" class="register-input" type="text" v-model="user.id" />
       </div>
 
       <div>
         <label for="password">비밀번호</label>
-        <input id="password" class="register-input" type="text" />
+        <input
+          id="password"
+          class="register-input"
+          type="text"
+          v-model="user.password"
+        />
       </div>
 
       <div>
         <label for="name">이름</label>
-        <input id="name" class="register-input" type="text" />
+        <input
+          id="name"
+          class="register-input"
+          type="text"
+          v-model="user.name"
+        />
       </div>
 
       <div>
         <label for="email">이메일</label>
-        <input id="email" class="register-input" type="text" />
+        <input
+          id="email"
+          class="register-input"
+          type="text"
+          v-model="user.email"
+        />
       </div>
 
-      <button class="register-button">회원가입</button>
+      <button class="register-button" @click="onRegister">회원가입</button>
     </div>
   </div>
 </template>
 
 <script>
+import { register } from "@/api/user.js";
+import EventBus from "@/util/EventBus.js";
+
 export default {
   name: "RegisterModal",
   components: {},
   data() {
     return {
-      message: "",
+      user: {
+        id: "",
+        password: "",
+        name: "",
+        email: "",
+      },
     };
   },
   created() {},
-  methods: {},
+  methods: {
+    onRegister() {
+      register(
+        this.user,
+        () => {
+          alert("회원가입에 성공하였습니다!");
+          EventBus.$emit("closeRegisterModal");
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+  },
 };
 </script>
 
