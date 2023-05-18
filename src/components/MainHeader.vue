@@ -3,9 +3,7 @@
     <header>
       <div>logo</div>
       <div id="search-bar">
-        <div class="test">
-          <button class="search-button" @click.stop="onClickSido">시/도</button>
-        </div>
+        <button class="search-button" @click.stop="onClickSido">시/도</button>
         <span></span>
         <button class="search-button">구/군</button>
       </div>
