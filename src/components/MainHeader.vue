@@ -2,11 +2,6 @@
   <div>
     <header>
       <div>logo</div>
-      <div id="search-bar">
-        <button class="search-button" @click.stop="onClickSido">시/도</button>
-        <span></span>
-        <button class="search-button">구/군</button>
-      </div>
       <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
         {{ userInfo.name }}님 안녕하세요!
         <div v-if="showModal" class="modal" @click.stop="">
@@ -33,7 +28,7 @@
     </header>
     <register-modal v-if="openRegisterModal"></register-modal>
     <login-modal v-if="openLoginModal"></login-modal>
-    <div class="bg" @click.stop="onClickBackground"></div>
+    <!-- <div class="bg" @click.stop="onClickBackground"></div> -->
   </div>
 </template>
 
@@ -108,11 +103,16 @@ export default {
 
 <style scoped>
 header {
+  position: absolute;
+  top: 0;
+  box-sizing: border-box;
+  width: 100vw;
   height: 80px;
   display: flex;
   justify-content: space-between;
   padding: 0 80px;
   align-items: center;
+  z-index: 100;
 }
 
 .test {
@@ -162,7 +162,7 @@ span {
   position: absolute;
   top: 100%;
   margin-top: 10px;
-  z-index: 100;
+  z-index: 1000;
   border-radius: 10px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.15);
 }

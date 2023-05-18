@@ -64,6 +64,8 @@ export default {
   height: fit-content;
   position: fixed;
   background-color: #ffffff;
+  z-index: 100;
+
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
