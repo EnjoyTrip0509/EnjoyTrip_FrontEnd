@@ -77,9 +77,7 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ["logoutUser"]),
-    onClickSido() {
-      this.showModal = !this.showModal;
-    },
+    onClickSido() {},
     onClickBackground() {
       this.showModal = false;
       this.openRegisterModal = false;
