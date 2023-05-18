@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <button class="close-button">
+    <button class="close-button" @click="close">
       <font-awesome-icon :icon="['fas', 'x']" />
     </button>
     <div class="header">
@@ -71,12 +71,16 @@ export default {
         this.user,
         () => {
           alert("회원가입에 성공하였습니다!");
-          EventBus.$emit("closeRegisterModal");
+          this.close();
         },
         (error) => {
           console.log(error);
         }
       );
+    },
+
+    close() {
+      EventBus.$emit("closeRegisterModal");
     },
   },
 };
