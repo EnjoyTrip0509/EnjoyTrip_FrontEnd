@@ -58,9 +58,7 @@ export default {
       }
     },
   },
-  mounted() {
-    console.log("testset", this.selected);
-  },
+  mounted() {},
 };
 </script>
 
