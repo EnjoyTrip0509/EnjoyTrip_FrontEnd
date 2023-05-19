@@ -36,7 +36,7 @@
       </div>
 
       <div class="searchbutton-section">
-        <button>내 취향 여행지 확인하기</button>
+        <button @click.stop="search">내 취향 여행지 확인하기</button>
       </div>
     </div>
   </div>
@@ -118,6 +118,9 @@ export default {
     },
     selectContent({ value, title }) {
       this.SET_CONTENT({ contentCode: value, contentName: title });
+    },
+    search() {
+      this.$router.push("/search");
     },
   },
 };

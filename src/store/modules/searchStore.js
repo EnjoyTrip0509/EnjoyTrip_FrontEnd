@@ -1,3 +1,5 @@
+import { searchAttractions } from "@/api/attraction.js";
+
 const searchStore = {
     namespaced: true,
     state: {
@@ -28,6 +30,24 @@ const searchStore = {
         SET_RESULT: (state, results) => {
             state.searchResults = results;
         }
+    },
+    actions: {
+        search({ state, commit }) {
+            searchAttractions(
+                {
+                    sidoCode: state.sido.sidoCode,
+                    gugunCode: state.gugun.gugunCode,
+                    contentTypeId: state.content.contentCode
+                },
+                ({ data }) => {
+                    console.log(data);
+                    commit("SET_RESULT", data);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+        },
     }
 }
 
