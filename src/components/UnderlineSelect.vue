@@ -1,13 +1,13 @@
 <template>
-  <div class="select" @click.stop="onClickSelect">
+  <div class="select" @click.stop="onClickSelect" ref="dropdownMenu">
     {{ selected }}
     <ul class="dropdown" :class="{ hide: !open }">
-      <!-- <li @click.stop="closeDropdown">서울</li>
-      <li @click.stop="closeDropdown">대구</li>
-      <li @click.stop="closeDropdown">부산</li>
-      <li @click.stop="closeDropdown">광주</li> -->
-
-      <li v-for="item in items" data-id="`${item.value}`" :key="item.value">
+      <li
+        v-for="item in items"
+        data-id="`${item.value}`"
+        :key="item.value"
+        @click.stop="closeDropdown(item)"
+      >
         {{ item.title }}
       </li>
     </ul>
@@ -15,30 +15,49 @@
 </template>
 
 <script>
+import EventBus from "@/util/EventBus.js";
+
 export default {
   name: "UnderlineSelect",
   components: {},
   props: {
     items: Array,
+    event: String,
+    selected: String,
   },
   data() {
     return {
       open: false,
-      selected: "",
     };
   },
-  created() {},
   methods: {
     onClickSelect() {
       this.open = !this.open;
+
+      if (this.open) {
+        document.addEventListener("click", this.documentClick);
+      } else {
+        document.removeEventListener("click", this.documentClick);
+      }
     },
-    closeDropdown(e) {
+    closeDropdown(item) {
       this.open = false;
-      this.selected = e.target.textContent;
+      EventBus.$emit(this.event, item);
+      document.removeEventListener("click", this.documentClick);
+    },
+    documentClick(e) {
+      const el = this.$refs.dropdownMenu;
+      const target = e.target;
+
+      console.log(el, target);
+
+      if (el !== target && !el.contains(target)) {
+        this.open = false;
+      }
     },
   },
   mounted() {
-    this.selected = this.items[0].title;
+    console.log("testset", this.selected);
   },
 };
 </script>
