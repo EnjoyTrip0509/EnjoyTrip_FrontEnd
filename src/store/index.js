@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 import createPersistedState from "vuex-persistedstate";
 
 import userStore from "@/store/modules/userStore"
+import searchStore from "@/store/modules/searchStore"
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     userStore,
+    searchStore
   },
   plugins: [
     createPersistedState({
