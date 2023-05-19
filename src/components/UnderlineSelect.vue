@@ -49,7 +49,9 @@ export default {
       const el = this.$refs.dropdownMenu;
       const target = e.target;
 
-      console.log(el, target);
+      if (!el) {
+        return;
+      }
 
       if (el !== target && !el.contains(target)) {
         this.open = false;
