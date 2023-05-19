@@ -154,6 +154,7 @@ export default {
   background-color: #000000;
   color: #ffffffff;
   border-radius: 50px;
+  cursor: pointer;
 }
 
 .title {
