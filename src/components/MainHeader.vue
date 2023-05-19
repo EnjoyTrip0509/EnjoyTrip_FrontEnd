@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <header>
       <div>logo</div>
       <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
@@ -102,21 +102,20 @@ export default {
 </script>
 
 <style scoped>
-header {
-  position: absolute;
+.container {
   top: 0;
-  box-sizing: border-box;
+  position: sticky;
+  z-index: 100;
+}
+
+header {
+  position: relative;
   width: 100vw;
   height: 80px;
   display: flex;
   justify-content: space-between;
   padding: 0 80px;
   align-items: center;
-  z-index: 100;
-}
-
-.test {
-  position: relative;
 }
 
 #search-bar {
