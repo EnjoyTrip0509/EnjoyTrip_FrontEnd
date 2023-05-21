@@ -154,7 +154,7 @@ export default {
   width: 200px;
   height: 50px;
   border: 0;
-  background-color: #000000;
+  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
   color: #ffffffff;
   border-radius: 50px;
   cursor: pointer;

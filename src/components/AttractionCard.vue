@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container" @click.stop="onClickCard(attraction.contentId)">
     <img :src="attraction.firstImage" alt="관광지 이미지" />
     <span>{{ attraction.title }}</span>
     <span>{{ attraction.addr1 }}</span>
@@ -20,7 +20,11 @@ export default {
   },
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    onClickCard(contentId) {
+      this.$router.push({name: 'attraction', params: {contentId}});
+    }
+  },
 };
 </script>
 

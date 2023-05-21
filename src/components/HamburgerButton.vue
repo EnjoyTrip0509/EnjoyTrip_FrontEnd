@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="hamburger-button-container">
     <span :class="{ clicked: clicked }"></span>
     <span :class="{ clicked: clicked }"></span>
     <span :class="{ clicked: clicked }"></span>
@@ -24,12 +24,13 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.hamburger-button-container {
   display: block;
   width: 16px;
   height: 10px;
   position: relative;
   cursor: pointer;
+  background-color: white;
 }
 
 span {
