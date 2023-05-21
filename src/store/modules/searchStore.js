@@ -1,3 +1,5 @@
+import { searchAttractions } from "@/api/attraction.js";
+
 const searchStore = {
     namespaced: true,
     state: {
@@ -15,6 +17,11 @@ const searchStore = {
         },
         searchResults: null
     },
+    getters: {
+        positions: (state) => {
+            return state.searchResults.map(({title, latitude, longitude}) => ({ title, latitude, longitude}));
+        }
+    },
     mutations: {
         SET_SIDO: (state, sido) => {
             state.sido = sido;
@@ -28,6 +35,24 @@ const searchStore = {
         SET_RESULT: (state, results) => {
             state.searchResults = results;
         }
+    },
+    actions: {
+        search({ state, commit }) {
+            searchAttractions(
+                {
+                    sidoCode: state.sido.sidoCode,
+                    gugunCode: state.gugun.gugunCode,
+                    contentTypeId: state.content.contentCode
+                },
+                ({ data }) => {
+                    console.log(data);
+                    commit("SET_RESULT", data);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+        },
     }
 }
 
