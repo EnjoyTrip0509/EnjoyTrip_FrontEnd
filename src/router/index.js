@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
 import SearchView from '@/views/SearchView.vue'
+import DetailView from '@/views/DetailView.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/search',
     name: 'search',
     component: SearchView
+  },
+  {
+    path: '/attraction/:contentId',
+    name: 'attraction',
+    component: DetailView
   }
 ]
 
