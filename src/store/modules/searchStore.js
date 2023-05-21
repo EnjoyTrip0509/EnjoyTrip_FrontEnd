@@ -17,6 +17,11 @@ const searchStore = {
         },
         searchResults: null
     },
+    getters: {
+        positions: (state) => {
+            return state.searchResults.map(({title, latitude, longitude}) => ({ title, latitude, longitude}));
+        }
+    },
     mutations: {
         SET_SIDO: (state, sido) => {
             state.sido = sido;
