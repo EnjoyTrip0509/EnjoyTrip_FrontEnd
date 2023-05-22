@@ -44,7 +44,7 @@
                   {{ item.attraction.title }}
                 </v-alert>
 
-                <v-btn class="ma-2" outlined large fab color="indigo">
+                <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal(item.contentId)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn
@@ -64,15 +64,19 @@
         </v-timeline>
       </v-card-text>
     </v-row>
+    <review-write-modal v-if="openWriteReviewModal" :planId="plan.id" :contentId="contentId" @closeWriteReviewModal="closeWriteReviewModal"></review-write-modal>
   </div>
 </template>
 
 <script>
 import { getPlanDayDetail, getPlanDetail, deleteLocation } from "@/api/plan.js";
+import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
 
 export default {
   name: "PlanDetail",
-
+  components: {
+    ReviewWriteModal,
+  },
   data() {
     return {
       plan: {},
@@ -81,6 +85,8 @@ export default {
       isModifying: false,
       map: null,
       markers: [],
+      openWriteReviewModal: false,
+      contentId:'',
     };
   },
   methods: {
@@ -178,6 +184,14 @@ export default {
         }
       );
     },
+    showWriteReviewModal(contentId) {
+      this.contentId = contentId;
+      this.openWriteReviewModal = true;
+    },
+    closeWriteReviewModal() {
+      this.openWriteReviewModal = false;
+      this.contentId = '';
+    }
   },
 
   mounted() {

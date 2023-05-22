@@ -24,7 +24,7 @@
             />
         </div>
         
-        <button class="add-plan-button" @click="addPlan">추가하기</button>
+        <button class="add-plan-button" @click="registerPlan">추가하기</button>
     </div>
 </template>
 
@@ -32,7 +32,7 @@
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import { mapState, mapActions } from "vuex";
-import { addPlan, listPlan } from "@/api/plan";
+import { addPlan } from "@/api/plan";
 
 const userStore = "userStore";
 const planStore = "planStore";
@@ -60,18 +60,12 @@ export default {
         close() {
             this.$emit('closeAddPlanModal');
         },
-        addPlan() {
+        registerPlan() {
             let plan = { title: this.title, userId: this.userInfo.id, startDate: this.dates[0], endDate: this.dates[1] };
 
-            addPlan(plan);
-
-            listPlan(
-                this.userInfo.id,
-                ({ data }) => {
-                    this.setPlans(data);
-                });
-                
-            this.$emit('closeAddPlanModal');
+            addPlan(plan, () => {
+                this.$emit('closeAddPlanModal');
+            });
         }
     }
 }
