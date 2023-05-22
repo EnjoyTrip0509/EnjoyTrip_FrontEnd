@@ -52,6 +52,7 @@
                   dark
                   small
                   color="red ml-16"
+                  @click="onClickDeleteLocation(item.id)"
                 >
                   <v-icon dark> mdi-minus </v-icon>
                 </v-btn>
@@ -65,7 +66,7 @@
 </template>
 
 <script>
-import { getPlanDayDetail, getPlanDetail } from "@/api/plan.js";
+import { getPlanDayDetail, getPlanDetail, deleteLocation } from "@/api/plan.js";
 
 export default {
   name: "PlanDetail",
@@ -161,6 +162,20 @@ export default {
       this.map.setBounds(bounds);
       this.markers = temp;
     },
+    onClickDeleteLocation(id) {
+      deleteLocation(
+        id,
+        () => {
+          // 삭제 성공시 daylocation을 갱신해준다.
+          this.dayLocations = this.dayLocations.filter((location) => {
+            return location.id !== id;
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
   },
 
   mounted() {
@@ -223,5 +238,10 @@ export default {
   justify-content: center;
   width: 40%;
   aspect-ratio: 1/1;
+}
+
+.hide {
+  width: 0px;
+  height: 0px;
 }
 </style>

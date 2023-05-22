@@ -26,3 +26,7 @@ export async function getPlanDayDetail(planId, day, success, fail) {
     //api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
     await api.get(`/plan/view/${planId}/${day}`).then(success).catch(fail);
 }
+
+export async function deleteLocation(locaionId, success, fail) {
+    await api.delete(`/plan/location/${locaionId}`).then(success).catch(fail);
+}
