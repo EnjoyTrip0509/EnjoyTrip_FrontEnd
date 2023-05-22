@@ -4,7 +4,7 @@
       {{ plan.title }} <br />
       {{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}
     </div>
-    <v-sheet class="mx-auto d-flex pa-2" max-width="700">
+    <v-sheet class="mx-auto d-flex pa-2 justify-center" max-width="700">
       <v-slide-group show-arrows>
         <v-slide-item v-for="n in dayCount" :key="n" v-slot="{ active }">
           <v-btn
@@ -19,48 +19,89 @@
           </v-btn>
         </v-slide-item>
       </v-slide-group>
-      <v-btn @click="modify">수정</v-btn>
+      <v-btn @click="modify">{{isModifying ? '수정완료' : '수정'}}</v-btn>
     </v-sheet>
 
-    <v-row class="d-flex justify-center">
+
+    <v-row v-if="!isModifying" class="d-flex justify-center">
+      <div id="map"></div>
+      <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
+        <v-timeline dense class="w-100">
+                <v-timeline-item
+                  v-for="item in dayLocations"
+                  :key="item.id"
+                  color="blue"
+                  small
+                  fill-dot
+                >
+                  <v-row class="d-flex align-center">
+                    <v-alert
+                      :value="true"
+                      color="blue"
+                      class="white--text mx-1 mt-3 w-75"
+                    >
+                      {{ item.attraction.title }}
+                    </v-alert>
+
+                    <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal(item.contentId)">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-btn
+                      v-if="isModifying"
+                      class="mx-2 d-inline"
+                      fab
+                      dark
+                      small
+                      color="red"
+                      @click="onClickDeleteLocation(item.id)"
+                    >
+                      <v-icon dark> mdi-minus </v-icon>
+                    </v-btn>
+                  </v-row>
+                </v-timeline-item>
+        </v-timeline>
+      </v-card-text>
+    </v-row>
+
+    <v-row v-else class="d-flex justify-center">
       <div id="map"></div>
 
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
         <v-timeline dense class="w-100">
-          <v-slide-x-reverse-transition group hide-on-leave>
-            <v-timeline-item
-              v-for="item in dayLocations"
-              :key="item.id"
-              color="blue"
-              small
-              fill-dot
-            >
-              <v-row class="d-flex align-center">
-                <v-alert
-                  :value="true"
+              <draggable v-model="modifiedLocations" group="locations" @start="drag=true" @end="drag=false">
+                <v-timeline-item
+                  v-for="item in modifiedLocations"
+                  :key="item.id"
                   color="blue"
-                  class="white--text mx-1 mt-3 w-75"
-                >
-                  {{ item.attraction.title }}
-                </v-alert>
-
-                <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal(item.contentId)">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn
-                  v-if="isModifying"
-                  class="mx-2 d-inline"
-                  fab
-                  dark
                   small
-                  color="red"
-                  @click="onClickDeleteLocation(item.id)"
+                  fill-dot
                 >
-                  <v-icon dark> mdi-minus </v-icon>
-                </v-btn>
-              </v-row>
-            </v-timeline-item>
-          </v-slide-x-reverse-transition>
+                  <v-row class="d-flex align-center">
+                    <v-alert
+                      :value="true"
+                      color="blue"
+                      class="white--text mx-1 mt-3 w-75"
+                    >
+                      {{ item.attraction.title }}
+                    </v-alert>
+
+                    <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal(item.contentId)">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-btn
+                      v-if="isModifying"
+                      class="mx-2 d-inline"
+                      fab
+                      dark
+                      small
+                      color="red"
+                      @click="onClickDeleteLocation(item.id)"
+                    >
+                      <v-icon dark> mdi-minus </v-icon>
+                    </v-btn>
+                  </v-row>
+                </v-timeline-item>
+              </draggable>
         </v-timeline>
       </v-card-text>
     </v-row>
@@ -69,24 +110,30 @@
 </template>
 
 <script>
-import { getPlanDayDetail, getPlanDetail, deleteLocation } from "@/api/plan.js";
+import { getPlanDayDetail, getPlanDetail, deleteLocation, updatePlan } from "@/api/plan.js";
 import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
+import draggable from 'vuedraggable'
+import _ from 'lodash';
+
 
 export default {
   name: "PlanDetail",
   components: {
     ReviewWriteModal,
+    draggable
   },
   data() {
     return {
       plan: {},
       dayCount: 0,
       dayLocations: [],
+      modifiedLocations: [],
       isModifying: false,
       map: null,
       markers: [],
       openWriteReviewModal: false,
       contentId:'',
+      drag: false
     };
   },
   methods: {
@@ -106,6 +153,23 @@ export default {
     },
     modify() {
       this.isModifying = !this.isModifying;
+
+      if (this.isModifying) {
+        this.modifiedLocations = this.dayLocations.map((location) => _.cloneDeep(location));
+      } else {
+        // console.log(this.plan, this.modifiedLocations);
+
+        updatePlan({
+          ...this.plan,
+          locations: this.modifiedLocations.map((location, index) => ({...location, order: index + 1})),
+        }, () => {
+          this.dayLocations = this.modifiedLocations;
+        },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
     },
     onClickDay(idx) {
       const planId = this.$route.params.planId;
@@ -122,6 +186,18 @@ export default {
         level: 5,
       };
       this.map = new kakao.maps.Map(container, options);
+
+      const planId = this.$route.params.planId;
+
+      getPlanDetail(planId, ({ data }) => {
+        this.plan = data;
+        this.calcDay();
+      });
+
+      getPlanDayDetail(planId, 1, ({ data }) => {
+        this.dayLocations = data;
+        this.displayMarkers();
+      });
     },
 
     displayMarkers() {
@@ -175,7 +251,7 @@ export default {
         id,
         () => {
           // 삭제 성공시 daylocation을 갱신해준다.
-          this.dayLocations = this.dayLocations.filter((location) => {
+          this.modifiedLocations = this.modifiedLocations.filter((location) => {
             return location.id !== id;
           });
         },
@@ -204,30 +280,30 @@ export default {
       script.addEventListener("load", () => {
         kakao.maps.load(this.initMap);
 
-        getPlanDetail(planId, ({ data }) => {
-          this.plan = data;
-          this.calcDay();
-        });
+        // getPlanDetail(planId, ({ data }) => {
+        //   this.plan = data;
+        //   this.calcDay();
+        // });
 
-        getPlanDayDetail(planId, 1, ({ data }) => {
-          this.dayLocations = data;
-          this.displayMarkers();
-        });
+        // getPlanDayDetail(planId, 1, ({ data }) => {
+        //   this.dayLocations = data;
+        //   this.displayMarkers();
+        // });
       });
 
       document.head.appendChild(script);
     } else {
       this.initMap();
 
-      getPlanDetail(planId, ({ data }) => {
-        this.plan = data;
-        this.calcDay();
-      });
+      // getPlanDetail(planId, ({ data }) => {
+      //   this.plan = data;
+      //   this.calcDay();
+      // });
 
-      getPlanDayDetail(planId, 1, ({ data }) => {
-        this.dayLocations = data;
-        this.displayMarkers();
-      });
+      // getPlanDayDetail(planId, 1, ({ data }) => {
+      //   this.dayLocations = data;
+      //   this.displayMarkers();
+      // });
     }
   },
   filters: {
