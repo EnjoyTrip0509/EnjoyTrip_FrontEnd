@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
 import SearchView from '@/views/SearchView.vue'
 import DetailView from '@/views/DetailView.vue'
+import PlanList from '@/components/Plan/PlanList.vue'
+import PlanDetail from '@/components/Plan/PlanDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -21,7 +23,17 @@ const routes = [
     path: '/attraction/:contentId',
     name: 'attraction',
     component: DetailView
-  }
+  },
+  {
+    path: '/plan/list',
+    name: 'planList',
+    component: PlanList,
+  },
+  {
+    path: '/plan/detail/:planId',
+    name: 'planDetail',
+    component: PlanDetail,
+  },
 ]
 
 const router = new VueRouter({

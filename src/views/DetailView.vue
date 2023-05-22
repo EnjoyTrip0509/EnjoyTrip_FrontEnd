@@ -3,20 +3,30 @@
       <img :src="attraction.firstImage" alt="">
       <div class="detail-header">
         <span>{{ attraction.title }}</span>
-        <button>일정추가</button>
+        <button @click="showAddLocationModal">일정추가</button>
       </div>
       <div class="address-section" >{{ attraction.addr1 }}</div>
-      <div class="description-section">'해발 1,200m의 청태산을 주봉으로 하여 인공림과 천연림이 잘 조화된 울창한 산림을 바탕으로 한 국유림 경영 시범단지로서 숲속에는 온갖 야생 동식물이 고루 서식하고 있어 자연박물관을 찾은 기분을 느낄 수 있다. 영동고속도로 신갈기점 강릉방향 128km 지점에 위치하고 있어 여름철 동해안 피서객들이 잠시 쉬었다 가기에 편리하고, 청소년의 심신수련을 위한 숲속교실도 설치되어 있으며 울창한 잣나무 숲속의 산림욕장은 한번왔다간 사람은 누구나 매료되어 찾는 곳이기도 하다. * 구역면적 - 403 ha'</div>
+      <div class="description-section">{{ attraction.overview }}</div>
+      <add-location-modal v-if="openAddLocationModal" :contentId="attraction.contentId" @closeAddLocationModal="closeAddLocationModal" @showAddPlanModal="showAddPlanModal"></add-location-modal>
+      <add-plan-modal v-if="openAddPlanModal" @closeAddPlanModal="closeAddPlanModal"></add-plan-modal>
     </div>
 </template>
 
 <script>
+import AddLocationModal from "@/components/Plan/AddLocationModal.vue";
+import AddPlanModal from "@/components/Plan/AddPlanModal.vue";
 import { getAttractionDetail } from "@/api/attraction.js";
 
 export default {
+  components: {
+    AddLocationModal,
+    AddPlanModal,
+  },
   data() {
     return {
       attraction: null,
+      openAddLocationModal: false,
+      openAddPlanModal: false,
     }
   },
   created() {
@@ -24,9 +34,26 @@ export default {
 
     getAttractionDetail(contentId, ({ data }) => {
       this.attraction = data;
+      console.log(this.attraction);
     },
     (error) => console.log(error)
     )
+  },
+  methods: {
+    showAddLocationModal() {
+        this.openAddLocationModal = true;
+    },
+    closeAddLocationModal() {
+        this.openAddLocationModal = false;
+    },
+    showAddPlanModal() {
+        this.closeAddLocationModal();
+        this.openAddPlanModal = true;
+    },
+    closeAddPlanModal() {
+        this.openAddPlanModal = false;
+        this.showAddLocationModal();
+    }, 
   }
 }
 </script>
