@@ -1,10 +1,10 @@
 <template>
-  <div class="container">
+  <div class="header-container">
     <header>
-      <div>logo</div>
+      <router-link to="/">logo</router-link>
       <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
         {{ userInfo.name }}님 안녕하세요!
-        <div v-if="showModal" class="modal" @click.stop="">
+        <div v-if="showModal" class="loginDropDown" @click.stop="">
           <profile-menu-item
             title="로그아웃"
             event="logout"
@@ -18,7 +18,7 @@
       <button class="user-menu" @click.stop="onClickProfile" v-else>
         <hamburger-button :clicked="showModal"></hamburger-button>
         <font-awesome-icon :icon="['fas', 'user']" />
-        <div v-if="showModal" class="modal" @click.stop="">
+        <div v-if="showModal" class="loginDropDown" @click.stop="">
           <profile-menu-item
             title="회원가입"
             event="showRegisterModal"
@@ -103,14 +103,15 @@ export default {
       this.showModal = false;
     },
     movePlanList() {
-      this.$router.push({name: 'planList'});
+      this.showModal = false;
+      this.$router.push({ name: "planList" });
     },
   },
 };
 </script>
 
 <style scoped>
-.container {
+.header-container {
   top: 0;
   position: sticky;
   z-index: 100;
@@ -160,7 +161,7 @@ span {
   background-color: #22222222;
 }
 
-.modal {
+.loginDropDown {
   cursor: default;
   width: fit-content;
   height: fit-content;

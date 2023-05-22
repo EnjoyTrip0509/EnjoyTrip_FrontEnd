@@ -21,3 +21,8 @@ export async function getPlanDetail(planId, success, fail) {
     //api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
     await api.get(`/plan/view/${planId}`).then(success).catch(fail);
 }
+
+export async function getPlanDayDetail(planId, day, success, fail) {
+    //api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
+    await api.get(`/plan/view/${planId}/${day}`).then(success).catch(fail);
+}
