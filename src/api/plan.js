@@ -31,3 +31,8 @@ export async function deleteLocation(locaionId, success, fail) {
     api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
     await api.delete(`/plan/location/${locaionId}`).then(success).catch(fail);
 }
+
+export async function updatePlan(plan, success, fail) {
+    api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
+    await api.put('/plan', plan).then(success).catch(fail);
+}
