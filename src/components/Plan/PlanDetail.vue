@@ -39,19 +39,22 @@
                 <v-alert
                   :value="true"
                   color="blue"
-                  class="white--text mx-1 mt-3"
-                  :class="{ 'w-75': isModifying }"
+                  class="white--text mx-1 mt-3 w-75"
                 >
                   {{ item.attraction.title }}
                 </v-alert>
 
+                <v-btn class="ma-2" outlined large fab color="indigo">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
                 <v-btn
                   v-if="isModifying"
                   class="mx-2 d-inline"
                   fab
                   dark
                   small
-                  color="red ml-16"
+                  color="red"
+                  @click="onClickDeleteLocation(item.id)"
                 >
                   <v-icon dark> mdi-minus </v-icon>
                 </v-btn>
@@ -65,7 +68,7 @@
 </template>
 
 <script>
-import { getPlanDayDetail, getPlanDetail } from "@/api/plan.js";
+import { getPlanDayDetail, getPlanDetail, deleteLocation } from "@/api/plan.js";
 
 export default {
   name: "PlanDetail",
@@ -161,6 +164,20 @@ export default {
       this.map.setBounds(bounds);
       this.markers = temp;
     },
+    onClickDeleteLocation(id) {
+      deleteLocation(
+        id,
+        () => {
+          // 삭제 성공시 daylocation을 갱신해준다.
+          this.dayLocations = this.dayLocations.filter((location) => {
+            return location.id !== id;
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
   },
 
   mounted() {
@@ -172,22 +189,32 @@ export default {
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
       script.addEventListener("load", () => {
         kakao.maps.load(this.initMap);
+
+        getPlanDetail(planId, ({ data }) => {
+          this.plan = data;
+          this.calcDay();
+        });
+
+        getPlanDayDetail(planId, 1, ({ data }) => {
+          this.dayLocations = data;
+          this.displayMarkers();
+        });
       });
 
       document.head.appendChild(script);
     } else {
       this.initMap();
+
+      getPlanDetail(planId, ({ data }) => {
+        this.plan = data;
+        this.calcDay();
+      });
+
+      getPlanDayDetail(planId, 1, ({ data }) => {
+        this.dayLocations = data;
+        this.displayMarkers();
+      });
     }
-
-    getPlanDetail(planId, ({ data }) => {
-      this.plan = data;
-      this.calcDay();
-    });
-
-    getPlanDayDetail(planId, 1, ({ data }) => {
-      this.dayLocations = data;
-      this.displayMarkers();
-    });
   },
   filters: {
     dateFormat(value) {
@@ -213,5 +240,10 @@ export default {
   justify-content: center;
   width: 40%;
   aspect-ratio: 1/1;
+}
+
+.hide {
+  width: 0px;
+  height: 0px;
 }
 </style>
