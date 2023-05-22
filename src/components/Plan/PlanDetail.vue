@@ -39,19 +39,21 @@
                 <v-alert
                   :value="true"
                   color="blue"
-                  class="white--text mx-1 mt-3"
-                  :class="{ 'w-75': isModifying }"
+                  class="white--text mx-1 mt-3 w-75"
                 >
                   {{ item.attraction.title }}
                 </v-alert>
 
+                <v-btn class="ma-2" outlined large fab color="indigo">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
                 <v-btn
                   v-if="isModifying"
                   class="mx-2 d-inline"
                   fab
                   dark
                   small
-                  color="red ml-16"
+                  color="red"
                   @click="onClickDeleteLocation(item.id)"
                 >
                   <v-icon dark> mdi-minus </v-icon>
