@@ -172,22 +172,32 @@ export default {
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
       script.addEventListener("load", () => {
         kakao.maps.load(this.initMap);
+
+        getPlanDetail(planId, ({ data }) => {
+          this.plan = data;
+          this.calcDay();
+        });
+
+        getPlanDayDetail(planId, 1, ({ data }) => {
+          this.dayLocations = data;
+          this.displayMarkers();
+        });
       });
 
       document.head.appendChild(script);
     } else {
       this.initMap();
+
+      getPlanDetail(planId, ({ data }) => {
+        this.plan = data;
+        this.calcDay();
+      });
+
+      getPlanDayDetail(planId, 1, ({ data }) => {
+        this.dayLocations = data;
+        this.displayMarkers();
+      });
     }
-
-    getPlanDetail(planId, ({ data }) => {
-      this.plan = data;
-      this.calcDay();
-    });
-
-    getPlanDayDetail(planId, 1, ({ data }) => {
-      this.dayLocations = data;
-      this.displayMarkers();
-    });
   },
   filters: {
     dateFormat(value) {
