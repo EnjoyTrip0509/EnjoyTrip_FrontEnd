@@ -4,7 +4,7 @@
       {{ plan.title }} <br />
       {{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}
     </div>
-    <v-sheet class="mx-auto d-flex pa-2" max-width="700">
+    <v-sheet class="mx-auto d-flex pa-2 justify-center" max-width="700">
       <v-slide-group show-arrows>
         <v-slide-item v-for="n in dayCount" :key="n" v-slot="{ active }">
           <v-btn
@@ -27,7 +27,7 @@
 
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
         <v-timeline dense class="w-100">
-          <v-slide-x-reverse-transition group hide-on-leave>
+          <v-slide-x-reverse-transition group hide-on-leave >
             <v-timeline-item
               v-for="item in dayLocations"
               :key="item.id"
@@ -122,6 +122,18 @@ export default {
         level: 5,
       };
       this.map = new kakao.maps.Map(container, options);
+
+      const planId = this.$route.params.planId;
+
+      getPlanDetail(planId, ({ data }) => {
+        this.plan = data;
+        this.calcDay();
+      });
+
+      getPlanDayDetail(planId, 1, ({ data }) => {
+        this.dayLocations = data;
+        this.displayMarkers();
+      });
     },
 
     displayMarkers() {
@@ -204,30 +216,30 @@ export default {
       script.addEventListener("load", () => {
         kakao.maps.load(this.initMap);
 
-        getPlanDetail(planId, ({ data }) => {
-          this.plan = data;
-          this.calcDay();
-        });
+        // getPlanDetail(planId, ({ data }) => {
+        //   this.plan = data;
+        //   this.calcDay();
+        // });
 
-        getPlanDayDetail(planId, 1, ({ data }) => {
-          this.dayLocations = data;
-          this.displayMarkers();
-        });
+        // getPlanDayDetail(planId, 1, ({ data }) => {
+        //   this.dayLocations = data;
+        //   this.displayMarkers();
+        // });
       });
 
       document.head.appendChild(script);
     } else {
       this.initMap();
 
-      getPlanDetail(planId, ({ data }) => {
-        this.plan = data;
-        this.calcDay();
-      });
+      // getPlanDetail(planId, ({ data }) => {
+      //   this.plan = data;
+      //   this.calcDay();
+      // });
 
-      getPlanDayDetail(planId, 1, ({ data }) => {
-        this.dayLocations = data;
-        this.displayMarkers();
-      });
+      // getPlanDayDetail(planId, 1, ({ data }) => {
+      //   this.dayLocations = data;
+      //   this.displayMarkers();
+      // });
     }
   },
   filters: {
