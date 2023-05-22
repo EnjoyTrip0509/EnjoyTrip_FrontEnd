@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-const searchStore = 'searchStore';
+import { mapGetters } from "vuex";
+const searchStore = "searchStore";
 
 export default {
   name: "SearchResultMap",
@@ -34,29 +34,30 @@ export default {
         });
       }
 
-      const imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+      const imgSrc =
+        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
       const imageSize = new kakao.maps.Size(24, 35);
       const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
 
-      this.positions.forEach(({title, latitude, longitude}) => {
+      this.positions.forEach(({ title, latitude, longitude }) => {
         const marker = new kakao.maps.Marker({
           map: this.map,
           position: new kakao.maps.LatLng(latitude, longitude),
           title: title,
           image: markerImage,
-        })
+        });
 
         this.markers.push(marker);
       });
 
-      console.log(this.positions);
       const bounds = this.positions.reduce(
-        (bound, {latitude, longitude}) => bound.extend(new kakao.maps.LatLng(latitude, longitude)),
-        new kakao.maps.LatLngBounds());
+        (bound, { latitude, longitude }) =>
+          bound.extend(new kakao.maps.LatLng(latitude, longitude)),
+        new kakao.maps.LatLngBounds()
+      );
 
-      console.log(bounds);
       this.map.setBounds(bounds);
-    }
+    },
   },
   mounted() {
     if (!window.kakao || !window.kakao.maps) {
@@ -72,8 +73,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(searchStore, ['positions']),
-  }
+    ...mapGetters(searchStore, ["positions"]),
+  },
 };
 </script>
 

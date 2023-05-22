@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <div class="ms-2 me-auto fw-bold mb-3">
       {{ plan.title }} <br />
       {{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}
@@ -22,42 +22,46 @@
       <v-btn @click="modify">수정</v-btn>
     </v-sheet>
 
-    <v-card-text class="py-0 pl-0 d-flex justify-center">
-      <v-timeline dense class="w-75">
-        <v-slide-x-reverse-transition group hide-on-leave>
-          <v-timeline-item
-            v-for="item in dayLocations"
-            :key="item.id"
-            color="blue"
-            small
-            fill-dot
-          >
-            <v-row class="d-flex align-center">
-              <v-alert
-                :value="true"
-                color="blue"
-                class="white--text mx-1 mt-3"
-                :class="{ 'w-75': isModifying }"
-              >
-                {{ item.attraction.title }}
-              </v-alert>
+    <v-row class="d-flex justify-center">
+      <div id="map"></div>
 
-              <v-btn
-                v-if="isModifying"
-                class="mx-2 d-inline"
-                fab
-                dark
-                small
-                color="red ml-16"
-              >
-                <v-icon dark> mdi-minus </v-icon>
-              </v-btn>
-            </v-row>
-          </v-timeline-item>
-        </v-slide-x-reverse-transition>
-      </v-timeline>
-    </v-card-text>
-  </v-app>
+      <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
+        <v-timeline dense class="w-100">
+          <v-slide-x-reverse-transition group hide-on-leave>
+            <v-timeline-item
+              v-for="item in dayLocations"
+              :key="item.id"
+              color="blue"
+              small
+              fill-dot
+            >
+              <v-row class="d-flex align-center">
+                <v-alert
+                  :value="true"
+                  color="blue"
+                  class="white--text mx-1 mt-3"
+                  :class="{ 'w-75': isModifying }"
+                >
+                  {{ item.attraction.title }}
+                </v-alert>
+
+                <v-btn
+                  v-if="isModifying"
+                  class="mx-2 d-inline"
+                  fab
+                  dark
+                  small
+                  color="red ml-16"
+                >
+                  <v-icon dark> mdi-minus </v-icon>
+                </v-btn>
+              </v-row>
+            </v-timeline-item>
+          </v-slide-x-reverse-transition>
+        </v-timeline>
+      </v-card-text>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -72,19 +76,9 @@ export default {
       dayCount: 0,
       dayLocations: [],
       isModifying: false,
+      map: null,
+      markers: [],
     };
-  },
-  created() {
-    const planId = this.$route.params.planId;
-
-    getPlanDetail(planId, ({ data }) => {
-      this.plan = data;
-      this.calcDay();
-    });
-
-    getPlanDayDetail(planId, 1, ({ data }) => {
-      this.dayLocations = data;
-    });
   },
   methods: {
     calcDay() {
@@ -109,9 +103,91 @@ export default {
 
       getPlanDayDetail(planId, idx, ({ data }) => {
         this.dayLocations = data;
-        console.log(data);
+        this.displayMarkers();
       });
     },
+    initMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(37.2429362, 131.8624657, 16),
+        level: 5,
+      };
+      this.map = new kakao.maps.Map(container, options);
+    },
+
+    displayMarkers() {
+      if (this.markers.length > 0) {
+        this.markers.forEach((marker) => {
+          marker.setMap(null);
+        });
+      }
+
+      const temp = [];
+
+      const imgSrc =
+        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+      const imageSize = new kakao.maps.Size(24, 35);
+      const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
+
+      this.dayLocations
+        .map(({ attraction: { title, latitude, longitude } }) => ({
+          title,
+          latitude,
+          longitude,
+        }))
+        .forEach(({ title, latitude, longitude }) => {
+          const marker = new kakao.maps.Marker({
+            map: this.map,
+            position: new kakao.maps.LatLng(latitude, longitude),
+            title: title,
+            image: markerImage,
+          });
+
+          temp.push(marker);
+        });
+
+      const bounds = this.dayLocations
+        .map(({ attraction: { title, latitude, longitude } }) => ({
+          title,
+          latitude,
+          longitude,
+        }))
+        .reduce(
+          (bound, { latitude, longitude }) =>
+            bound.extend(new kakao.maps.LatLng(latitude, longitude)),
+          new kakao.maps.LatLngBounds()
+        );
+
+      this.map.setBounds(bounds);
+      this.markers = temp;
+    },
+  },
+
+  mounted() {
+    const planId = this.$route.params.planId;
+    console.log(planId);
+
+    if (!window.kakao || !window.kakao.maps) {
+      const script = document.createElement("script");
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
+      script.addEventListener("load", () => {
+        kakao.maps.load(this.initMap);
+      });
+
+      document.head.appendChild(script);
+    } else {
+      this.initMap();
+    }
+
+    getPlanDetail(planId, ({ data }) => {
+      this.plan = data;
+      this.calcDay();
+    });
+
+    getPlanDayDetail(planId, 1, ({ data }) => {
+      this.dayLocations = data;
+      this.displayMarkers();
+    });
   },
   filters: {
     dateFormat(value) {
@@ -130,3 +206,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#map {
+  display: flex;
+  justify-content: center;
+  width: 40%;
+  aspect-ratio: 1/1;
+}
+</style>
