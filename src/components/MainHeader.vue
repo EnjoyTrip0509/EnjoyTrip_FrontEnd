@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
     <header>
-      <div>logo</div>
+      <router-link to="/">logo</router-link>
       <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
         {{ userInfo.name }}님 안녕하세요!
         <div v-if="showModal" class="loginDropDown" @click.stop="">
@@ -103,6 +103,7 @@ export default {
       this.showModal = false;
     },
     movePlanList() {
+      this.showModal = false;
       this.$router.push({ name: "planList" });
     },
   },
