@@ -4,13 +4,15 @@ import createPersistedState from "vuex-persistedstate";
 
 import userStore from "@/store/modules/userStore"
 import searchStore from "@/store/modules/searchStore"
+import planStore from "@/store/modules/planStore"
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     userStore,
-    searchStore
+    searchStore,
+    planStore,
   },
   plugins: [
     createPersistedState({
