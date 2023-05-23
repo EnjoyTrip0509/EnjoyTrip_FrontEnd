@@ -37,7 +37,7 @@ const searchStore = {
         }
     },
     actions: {
-        search({ state, commit }) {
+        search({ state, commit }, callback) {
             searchAttractions(
                 {
                     sidoCode: state.sido.sidoCode,
@@ -45,8 +45,8 @@ const searchStore = {
                     contentTypeId: state.content.contentCode
                 },
                 ({ data }) => {
-                    console.log(data);
                     commit("SET_RESULT", data);
+                    callback();
                 },
                 (error) => {
                     console.log(error);
