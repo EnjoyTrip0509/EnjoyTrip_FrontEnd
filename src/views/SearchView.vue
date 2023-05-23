@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="search-container">
     <div class="attraction-grid">
       <template v-for="attraction in searchResults">
         <attraction-card
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.search-container {
   display: flex;
   width: 100%;
   height: 100%;
