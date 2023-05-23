@@ -5,7 +5,7 @@
         </button>
 
         <div class="review-header">
-            <div class="review-header-title">리뷰 작성</div>
+            <div class="review-header-title">리뷰 수정</div>
         </div>
         
         <div class="review-info">
@@ -22,8 +22,8 @@
         </div>
 
         <div class="form-group">
-            <input type="text" v-model="subject" class="form-control mb-1" id="subject" placeholder="제목" required/>
-            <textarea class="form-control" id="content" rows="4" v-model="content" placeholder="내용" required></textarea>
+            <input type="text" v-model="subject" class="form-control mb-1" id="subject" v-text="review.subject" required/>
+            <textarea class="form-control" id="content" rows="4" v-model="content" v-text="review.content" required></textarea>
         </div>
 
         <button class="add-review-button" @click="registerReview">리뷰 등록</button>
@@ -33,16 +33,12 @@
 <script>
 import { getAttractionDetail } from "@/api/attraction.js";
 import { getPlanDetail } from "@/api/plan.js";
-import { addReview } from "@/api/review.js";
-import { mapState } from "vuex";
-
-const userStore = "userStore";
+import { modifyReview } from "@/api/review.js";
 
 export default {
-    name: "ModalReviewWrite",
+    name: "ReviewModifyModal",
     props: {
-        contentId: Number,
-        planId: Number,
+        review: {},
     },
     data() {
         return {
@@ -52,12 +48,9 @@ export default {
             content: '',
         }
     },
-    computed: {
-        ...mapState(userStore, ["userInfo"]),
-    },
     created() {
         getAttractionDetail(
-            this.contentId, 
+            this.review.contentId, 
             ({ data }) => {
                 this.attraction = data;
             },
@@ -65,7 +58,7 @@ export default {
             );
         
         getPlanDetail(
-            this.planId, 
+            this.review.planId, 
             ({ data }) => {
                 this.plan = data;
             },
@@ -74,9 +67,9 @@ export default {
     },
     methods: {
         registerReview() {
-            const review = { contentId: this.attraction.contentId, planId:this.planId, subject: this.subject, content: this.content, userId: this.userInfo.id };
+            const review = { contentId: this.review.contentId, planId: this.review.planOd, subject: this.subject, content: this.content, userId: this.userInfo.id };
             
-            addReview(review);
+            modifyReview(review);
 
             this.close();
         },

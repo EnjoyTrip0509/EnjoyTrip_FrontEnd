@@ -112,8 +112,9 @@ export default {
       this.$router.push({ name: "planList" });
     },
     moveReviewList() {
-      console.log("in");
-      this.$router.push({ name: "review" });
+      if (this.$route.path != '/review') {
+        this.$router.push('/review');
+      }
     }
   },
 };

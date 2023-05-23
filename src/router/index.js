@@ -6,7 +6,6 @@ import DetailView from '@/views/DetailView.vue'
 import PlanList from '@/components/Plan/PlanList.vue'
 import PlanDetail from '@/components/Plan/PlanDetail.vue'
 import ReviewView from '@/views/ReviewView.vue'
-import ReviewListByUser from '@/components/Review/ReviewListByUser.vue'
 
 Vue.use(VueRouter)
 
@@ -39,15 +38,7 @@ const routes = [
   {
     path: '/review',
     name: 'review',
-    component: ReviewView,
-    redirect: '/review/list',
-    children: [
-      {
-        path: "list",
-        name: "reviewList",
-        component: ReviewListByUser
-      },
-    ]
+    component: ReviewView
   },
 ]
 

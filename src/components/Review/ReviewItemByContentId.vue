@@ -1,9 +1,9 @@
 <template>
-    <b-list-group-item class="border-0 mb-5">
+    <b-list-group-item class="border-0 mb-2">
         <div class="review-header">
-            <img :src="require(`@/assets/planet-earth.png`)" />
+            <font-awesome-icon class="user-icon mt-2" :icon="['fas', 'user']"/>
             <div class="review-info ml-3">
-                <div class="review-user">{{ review.userId }}</div>
+                <div class="review-user">{{ review.userName }}</div>
                 <div class="reivew-register-time">{{ review.registerTime | dateFormat }}</div>
             </div>
         </div>
@@ -44,6 +44,12 @@ export default {
 
 .reivew-register-time {
     font-size: 14px;
+    color: gray;
+}
+
+.user-icon {
+    width: 35px;
+    height: 35px;
     color: gray;
 }
 </style>

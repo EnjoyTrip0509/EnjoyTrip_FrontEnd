@@ -8,7 +8,7 @@
       <div class="address-section" >{{ attraction.addr1 }}</div>
       <div class="description-section">{{ attraction.overview }}</div>
       <div class="review-section">
-        <div class="review-section-header mb-3"><font-awesome-icon :icon="['fas', 'star']" class="mr-2"/> 리뷰</div>
+        <div class="review-section-header mb-3"><font-awesome-icon :icon="['fas', 'star']" class="icon-star mr-2 mb-1"/> 리뷰</div>
         <div v-if="attraction.contentId" class="review-section-list">
           <review-list-by-content-id :contentId="attraction.contentId"></review-list-by-content-id>
         </div>
@@ -125,6 +125,10 @@ export default {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #ebebeb;
+}
+
+.icon-star {
+  color: #FFD033;
 }
 
 </style>
