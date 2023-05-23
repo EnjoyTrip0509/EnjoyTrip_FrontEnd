@@ -13,6 +13,10 @@
             title="내 여행 계획"
             event="movePlanList"
           ></profile-menu-item>
+          <profile-menu-item
+            title="내 리뷰"
+            event="moveReviewList"
+          ></profile-menu-item>
         </div>
       </div>
       <button class="user-menu" @click.stop="onClickProfile" v-else>
@@ -72,6 +76,7 @@ export default {
     EventBus.$on("closeLoginModal", this.closeLoginModal);
     EventBus.$on("logout", this.logout);
     EventBus.$on("movePlanList", this.movePlanList);
+    EventBus.$on("moveReviewList", this.moveReviewList);
   },
   methods: {
     ...mapActions(userStore, ["logoutUser"]),
@@ -106,6 +111,10 @@ export default {
       this.showModal = false;
       this.$router.push({ name: "planList" });
     },
+    moveReviewList() {
+      console.log("in");
+      this.$router.push({ name: "review" });
+    }
   },
 };
 </script>
