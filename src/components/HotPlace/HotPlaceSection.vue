@@ -1,9 +1,9 @@
 <template>
   <div class="hotplace-section">
     <div class="text-h3">TRIP US에서 선정한 HOT PLACE</div>
-    <v-slide-group v-model="model" class="pa-4 w-75 slide" show-arrows>
+    <v-slide-group class="pa-4 w-75 slide" show-arrows>
       <v-slide-item v-for="n in 15" :key="n">
-        <hot-place-card :key="i"></hot-place-card>
+        <hot-place-card :key="n"></hot-place-card>
       </v-slide-item>
     </v-slide-group>
   </div>
