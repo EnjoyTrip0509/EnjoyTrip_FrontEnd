@@ -18,3 +18,7 @@ export async function tokenRegeneration(user, success, fail) {
 export async function logout(userid, success, fail) {
     await api.get(`/user/logout/${userid}`).then(success).catch(fail);
 }
+
+export async function checkPassword(userInfo, success, fail) {
+    await api.post(`/user/checkpassword`, userInfo).then(success).catch(fail);
+}
