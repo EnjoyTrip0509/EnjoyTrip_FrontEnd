@@ -13,6 +13,7 @@
             title="내 여행 계획"
             event="movePlanList"
           ></profile-menu-item>
+          <my-page-modal></my-page-modal>
         </div>
       </div>
       <button class="user-menu" @click.stop="onClickProfile" v-else>
@@ -41,6 +42,7 @@ import HamburgerButton from "./HamburgerButton.vue";
 import ProfileMenuItem from "./ProfileMenuItem.vue";
 import RegisterModal from "@/components/RegisterModal.vue";
 import LoginModal from "@/components/LoginModal.vue";
+import MyPageModal from "./User/MyPageModal.vue";
 import EventBus from "@/util/EventBus.js";
 import { mapActions, mapState } from "vuex";
 
@@ -53,6 +55,7 @@ export default {
     ProfileMenuItem,
     RegisterModal,
     LoginModal,
+    MyPageModal,
   },
   data() {
     return {
