@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapState } from "vuex";
 import AttractionCard from "@/components/AttractionCard.vue";
 import SearchResultMap from "@/components/SearchResultMap.vue";
 
@@ -34,12 +34,6 @@ export default {
 
   computed: {
     ...mapState(searchStore, ["searchResults"]),
-  },
-  created() {
-    this.search();
-  },
-  methods: {
-    ...mapActions(searchStore, ["search"]),
   },
 };
 </script>

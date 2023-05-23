@@ -36,7 +36,7 @@
       </div>
 
       <div class="searchbutton-section">
-        <button @click.stop="search">내 취향 여행지 확인하기</button>
+        <button @click.stop="searchAttractions">내 취향 여행지 확인하기</button>
       </div>
 
       <hot-place-section></hot-place-section>
@@ -49,7 +49,7 @@ import LandingImage from "@/components/LandingImage.vue";
 import UnderlineSelect from "@/components/UnderlineSelect.vue";
 import contentId from "@/constant/content.js";
 import { getSido, getGugun } from "@/api/location.js";
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import EventBus from "@/util/EventBus.js";
 import contents from "@/constant/content.js";
 import HotPlaceSection from "@/components/HotPlace/HotPlaceSection.vue";
@@ -99,6 +99,7 @@ export default {
   },
   methods: {
     ...mapMutations(searchStore, ["SET_SIDO", "SET_GUGUN", "SET_CONTENT"]),
+    ...mapActions(searchStore, ["search"]),
     selectSido({ value, title }) {
       getGugun(
         value,
@@ -123,8 +124,10 @@ export default {
     selectContent({ value, title }) {
       this.SET_CONTENT({ contentCode: value, contentName: title });
     },
-    search() {
-      this.$router.push("/search");
+    searchAttractions() {
+      this.search(() => {
+        this.$router.push("/search");
+      });
     },
   },
 };
