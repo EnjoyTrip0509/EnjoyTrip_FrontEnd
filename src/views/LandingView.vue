@@ -38,6 +38,8 @@
       <div class="searchbutton-section">
         <button @click.stop="search">내 취향 여행지 확인하기</button>
       </div>
+
+      <hot-place-section></hot-place-section>
     </div>
   </div>
 </template>
@@ -50,6 +52,7 @@ import { getSido, getGugun } from "@/api/location.js";
 import { mapMutations, mapState } from "vuex";
 import EventBus from "@/util/EventBus.js";
 import contents from "@/constant/content.js";
+import HotPlaceSection from "@/components/HotPlace/HotPlaceSection.vue";
 
 const searchStore = "searchStore";
 
@@ -58,6 +61,7 @@ export default {
   components: {
     LandingImage,
     UnderlineSelect,
+    HotPlaceSection,
   },
   data() {
     return {
