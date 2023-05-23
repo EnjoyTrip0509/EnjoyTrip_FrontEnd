@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <img :src="attraction.firstImage" alt="">
+      <img :src="attraction.firstImage || require(`@/assets/planet-earth.png`)" alt="">
       <div class="detail-header">
         <span>{{ attraction.title }}</span>
         <button @click="showAddLocationModal">일정추가</button>
