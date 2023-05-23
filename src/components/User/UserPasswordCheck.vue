@@ -39,7 +39,7 @@ export default {
       checkPassword(
         { ...this.userInfo, password: this.password },
         () => {
-          EventBus.$emit("showModifyForm");
+          EventBus.$emit("modifyMyInfo");
         },
         () => {
           this.message = "비밀번호를 확인해주세요.";

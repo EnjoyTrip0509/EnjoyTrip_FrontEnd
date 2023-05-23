@@ -12,7 +12,7 @@
           v-bind="attrs"
         ></profile-menu-item>
       </template>
-      <div v-if="!isModifying" class="content">
+      <div v-if="!isModifying && !showForm" class="content">
         <user-info-table></user-info-table>
         <div class="button-box">
           <v-btn color="green darken-1" text @click="modifyUserInfo"
@@ -21,11 +21,13 @@
         </div>
       </div>
 
-      <div v-if="isModifying" class="content">
+      <div v-if="isModifying && !showForm" class="content">
         <user-password-check></user-password-check>
       </div>
 
-      <div class="content"></div>
+      <div v-if="showForm && !isModifying" class="content">
+        <user-update-form></user-update-form>
+      </div>
     </v-dialog>
   </div>
 </template>
@@ -34,12 +36,14 @@ import EventBus from "@/util/EventBus";
 import ProfileMenuItem from "../ProfileMenuItem.vue";
 import UserInfoTable from "./UserInfoTable.vue";
 import UserPasswordCheck from "@/components/User/UserPasswordCheck.vue";
+import UserUpdateForm from "@/components/User/UserUpdateForm.vue";
 
 export default {
   components: {
     UserInfoTable,
     ProfileMenuItem,
     UserPasswordCheck,
+    UserUpdateForm,
   },
   created() {
     EventBus.$on("showDialog", this.showDialog);
@@ -54,6 +58,11 @@ export default {
   methods: {
     showDialog() {
       this.dialog = !this.dialog;
+
+      if (!this.dialog) {
+        this.isModifying = false;
+        this.showForm = false;
+      }
     },
     closeDialog() {
       this.dialog = false;
@@ -66,9 +75,11 @@ export default {
     },
     onClickOutside() {
       this.isModifying = false;
+      this.showForm = false;
     },
     showModifyForm() {
       this.isModifying = false;
+      this.showForm = true;
     },
   },
 };
