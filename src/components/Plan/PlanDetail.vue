@@ -127,6 +127,7 @@ export default {
       openWriteReviewModal: false,
       contentId:'',
       drag: false,
+      ployline: null,
     };
   },
   methods: {
@@ -200,6 +201,10 @@ export default {
         });
       }
 
+      if (this.polyline) {
+        this.polyline.setMap(null);
+      }
+
       const temp = [];
 
       const imgSrc =
@@ -236,7 +241,18 @@ export default {
           new kakao.maps.LatLngBounds()
         );
 
+      this.polyline = new kakao.maps.Polyline({
+        path: this.dayLocations.map(({attraction: {latitude, longitude}}) => new kakao.maps.LatLng(latitude, longitude)),
+        strokeWeight: 5, // 선의 두께 입니다
+        strokeColor: '#FFAE00', // 선의 색깔입니다
+        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'solid' // 선의 스타일입니다
+      })
+
       this.map.setBounds(bounds);
+      this.polyline.setMap(this.map);
+
+      console.log('before', this.polyline);
       this.markers = temp;
     },
     onClickDeleteLocation(id) {
