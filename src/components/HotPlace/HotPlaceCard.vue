@@ -12,12 +12,9 @@
       ></v-progress-linear>
     </template>
 
-    <v-img
-      height="250"
-      :src="attraction.firstImage"
-    ></v-img>
+    <v-img height="250" :src="attraction.firstImage"></v-img>
 
-    <v-card-title>{{ attraction.title }}</v-card-title>
+    <v-card-title>{{ attraction.title | attractionTitleSlice }}</v-card-title>
 
     <v-card-text>
       <p>{{ attraction.addr1 }}</p>
@@ -37,6 +34,17 @@ export default {
   methods: {
     onClickHotPlaceCard(contentId) {
       this.$router.push({ name: "attraction", params: { contentId } });
+    },
+  },
+
+  filters: {
+    attractionTitleSlice(value) {
+      if (value == null) {
+        return value;
+      }
+
+      //eslint-disable-next-line
+      return value.split(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/)[0];
     },
   },
 };
