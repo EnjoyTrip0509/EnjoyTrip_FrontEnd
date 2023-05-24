@@ -1,41 +1,58 @@
 <template>
   <div class="header-container">
     <header>
-      <router-link to="/">logo</router-link>
-      <div
-        v-if="this.isLogin"
-        class="myprofile"
-        @click.stop="onClickProfile"
-        ref="loginDropDown"
-      >
-        {{ userInfo.name }}님 안녕하세요!
-        <div v-if="showModal" class="loginDropDown" @click.stop="">
-          <profile-menu-item
-            title="로그아웃"
-            event="logout"
-          ></profile-menu-item>
-          <profile-menu-item
-            title="내 여행 계획"
-            event="movePlanList"
-          ></profile-menu-item>
-          <my-page-modal></my-page-modal>
-        </div>
+      <router-link to="/">
+        <img :src="require(`@/assets/logo_bold_negative.png`)" class="logo"
+      /></router-link>
+
+      <div class="center-img">
+        <img :src="require(`@/assets/planet-earth.png`)" />
       </div>
-      <button class="user-menu" @click.stop="onClickProfile" v-else>
-        <hamburger-button :clicked="showModal"></hamburger-button>
-        <font-awesome-icon :icon="['fas', 'user']" />
-        <div
-          v-if="showModal"
-          class="loginDropDown"
-          @click.stop=""
-          ref="loginDropDown"
-        >
-          <register-modal></register-modal>
-          <login-modal></login-modal>
-        </div>
-      </button>
+      <div class="user-button-container" v-if="this.isLogin">
+        <button class="user-menu" @click.stop="onClickProfile">
+          <hamburger-button :clicked="showModal"></hamburger-button>
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <div
+            v-if="showModal"
+            class="loginDropDown"
+            @click.stop=""
+            ref="loginDropDown"
+          >
+            <profile-menu-item
+              :title="userInfo.id"
+              event=""
+              :disabled="true"
+            ></profile-menu-item>
+
+            <profile-menu-item
+              title="로그아웃"
+              event="logout"
+            ></profile-menu-item>
+            <profile-menu-item
+              title="내 여행 계획"
+              event="movePlanList"
+            ></profile-menu-item>
+            <my-page-modal></my-page-modal>
+          </div>
+        </button>
+      </div>
+
+      <div class="user-button-container" v-else>
+        <button class="user-menu" @click.stop="onClickProfile">
+          <hamburger-button :clicked="showModal"></hamburger-button>
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <div
+            v-if="showModal"
+            class="loginDropDown"
+            @click.stop=""
+            ref="loginDropDown"
+          >
+            <register-modal></register-modal>
+            <login-modal></login-modal>
+          </div>
+        </button>
+      </div>
     </header>
-    <register-modal v-if="openRegisterModal"></register-modal>
   </div>
 </template>
 
@@ -143,6 +160,9 @@ export default {
     onClickUserInfo() {
       document.removeEventListener("click", this.documentClick);
     },
+    onClickLogo() {
+      this.$router.push("/");
+    },
   },
 };
 </script>
@@ -152,7 +172,7 @@ export default {
   top: 0;
   position: sticky;
   z-index: 100;
-  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
+  background-color: black;
 }
 
 header {
@@ -163,6 +183,30 @@ header {
   justify-content: space-between;
   padding: 0 80px;
   align-items: center;
+}
+
+header a {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.logo {
+  cursor: pointer;
+  height: 60%;
+}
+
+.center-img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-img img {
+  height: 60%;
+  /* transform: translateX(-110px); */
 }
 
 #search-bar {
@@ -191,13 +235,6 @@ span {
   font-size: 14px;
 }
 
-.bg {
-  height: 100vh;
-  /* background-color: rgb(0 0 0 / 25%);
-   */
-  background-color: #22222222;
-}
-
 .loginDropDown {
   cursor: default;
   width: fit-content;
@@ -211,6 +248,7 @@ span {
   z-index: 1000;
   border-radius: 10px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.15);
+  color: black;
 }
 
 .outer {
@@ -232,10 +270,23 @@ span {
   border-radius: 21px;
   transition: box-shadow 0.2s ease;
   height: 42px;
-  width: 77px;
+  width: 72px;
 }
 
 .myprofile {
   position: relative;
+  color: white;
+  height: 42px;
+  width: 240px;
+  display: flex;
+  align-items: center;
+}
+
+.user-button-container {
+  height: 100%;
+  width: 240px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>
