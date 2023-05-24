@@ -30,28 +30,20 @@
           @click.stop=""
           ref="loginDropDown"
         >
-          <profile-menu-item
-            title="회원가입"
-            event="showRegisterModal"
-          ></profile-menu-item>
-          <profile-menu-item
-            title="로그인"
-            event="showLoginModal"
-          ></profile-menu-item>
+          <register-modal></register-modal>
+          <login-modal></login-modal>
         </div>
       </button>
     </header>
     <register-modal v-if="openRegisterModal"></register-modal>
-    <login-modal v-if="openLoginModal"></login-modal>
-    <!-- <div class="bg" @click.stop="onClickBackground"></div> -->
   </div>
 </template>
 
 <script>
 import HamburgerButton from "./HamburgerButton.vue";
 import ProfileMenuItem from "./ProfileMenuItem.vue";
-import RegisterModal from "@/components/RegisterModal.vue";
-import LoginModal from "@/components/LoginModal.vue";
+import LoginModal from "@/components/User/LoginModal.vue";
+import RegisterModal from "@/components/User/RegisterModal.vue";
 import MyPageModal from "./User/MyPageModal.vue";
 import EventBus from "@/util/EventBus.js";
 import { mapActions, mapState } from "vuex";
@@ -86,6 +78,8 @@ export default {
     EventBus.$on("logout", this.logout);
     EventBus.$on("movePlanList", this.movePlanList);
     EventBus.$on("showDialog", this.onClickUserInfo);
+    EventBus.$on("showLoginDialog", this.onClickUserInfo);
+    EventBus.$on("showRegisterDialog", this.onClickUserInfo);
     EventBus.$on("closeDialog", this.onClickProfile);
   },
   methods: {
