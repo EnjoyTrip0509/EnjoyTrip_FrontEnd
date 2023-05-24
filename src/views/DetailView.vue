@@ -130,5 +130,4 @@ export default {
 .icon-star {
   color: #FFD033;
 }
-
 </style>
