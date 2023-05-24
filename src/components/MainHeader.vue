@@ -34,15 +34,16 @@
             title="회원가입"
             event="showRegisterModal"
           ></profile-menu-item>
-          <profile-menu-item
+          <!-- <profile-menu-item
             title="로그인"
             event="showLoginModal"
-          ></profile-menu-item>
+          ></profile-menu-item> -->
+          <login-modal></login-modal>
         </div>
       </button>
     </header>
     <register-modal v-if="openRegisterModal"></register-modal>
-    <login-modal v-if="openLoginModal"></login-modal>
+    <!-- <login-modal v-if="openLoginModal"></login-modal> -->
     <!-- <div class="bg" @click.stop="onClickBackground"></div> -->
   </div>
 </template>
@@ -51,7 +52,8 @@
 import HamburgerButton from "./HamburgerButton.vue";
 import ProfileMenuItem from "./ProfileMenuItem.vue";
 import RegisterModal from "@/components/RegisterModal.vue";
-import LoginModal from "@/components/LoginModal.vue";
+// import LoginModal from "@/components/LoginModal.vue";
+import LoginModal from "@/components/User/LoginModal.vue";
 import MyPageModal from "./User/MyPageModal.vue";
 import EventBus from "@/util/EventBus.js";
 import { mapActions, mapState } from "vuex";
