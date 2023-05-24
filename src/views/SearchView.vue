@@ -5,10 +5,10 @@
       <div class="attraction-section">
         <div class="attraction-grid">
           <template v-for="attraction in searchResults">
-            <attraction-card
+            <attraction-search-card
               :key="attraction.contentId"
               :attraction="attraction"
-            ></attraction-card>
+            ></attraction-search-card>
           </template>
         </div>
 
@@ -26,10 +26,10 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import AttractionCard from "@/components/AttractionCard.vue";
 import SearchResultMap from "@/components/SearchResultMap.vue";
 import AttractionSearch from "@/components/Search/AttractionSearch.vue";
 import EventBus from "@/util/EventBus.js";
+import AttractionSearchCard from "@/components/Search/AttractionCardSearch.vue";
 
 const searchStore = "searchStore";
 
@@ -41,9 +41,10 @@ export default {
     };
   },
   components: {
-    AttractionCard,
+    // AttractionCard,
     SearchResultMap,
     AttractionSearch,
+    AttractionSearchCard,
   },
 
   computed: {
@@ -75,15 +76,14 @@ export default {
 .search-container {
   display: flex;
   width: 100%;
-  height: 100%;
 }
 
 .attraction-grid {
-  width: 100%;
-  display: grid;
-  gap: 40px 24px;
-  grid-template-columns: repeat(3, 1fr);
-  margin: 20px;
+  display: flex;
+  overflow-y: scroll;
+  flex-wrap: wrap;
+  height: 100vh;
+  justify-content: center;
 }
 
 .attraction-section {

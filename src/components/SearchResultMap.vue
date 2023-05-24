@@ -89,8 +89,9 @@ export default {
 <style scoped>
 #map {
   position: sticky;
-  width: 1000px;
+  width: 40%;
   height: 100vh;
   top: 10px;
+  margin: 30px;
 }
 </style>
