@@ -64,7 +64,7 @@ const searchStore = {
             searchAttractions(
                 {
                     sidoCode: state.sido.sidoCode,
-                    gugunCode: state.gugun.gugunCode,
+                    gugunCode: state?.gugun?.gugunCode,
                     contentTypeId: state.content.contentCode,
                     pageNo: pageIndex,
                 },
