@@ -46,7 +46,7 @@
 
 <script>
 import LandingImage from "@/components/LandingImage.vue";
-import UnderlineSelect from "@/components/UnderlineSelect.vue";
+import UnderlineSelect from "@/components/Search/UnderlineSelect.vue";
 import contentId from "@/constant/content.js";
 import { getSido, getGugun } from "@/api/location.js";
 import { mapActions, mapMutations, mapState } from "vuex";
