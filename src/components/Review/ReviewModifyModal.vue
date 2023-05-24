@@ -17,7 +17,7 @@
                 </div>
                 
                 <div class="review-info">
-                    <img :src="attraction.firstImage" alt="">
+                    <img :src="attraction.firstImage || require(`@/assets/planet-earth.png`)" alt="관광지 이미지" />
                     <div class="review-info-content">
                         <div class="review-info-attraction">
                             <h3>{{ attraction.title }}</h3>

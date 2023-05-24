@@ -147,11 +147,12 @@ export default {
       this.showModal = false;
       document.removeEventListener("click", this.documentClick);
 
-      if (this.$route.path != '/plan/list') {
-        this.$router.push('/plan/list');
+      if (this.$route.path != '/plan' && this.$route.path != '/plan/list') {
+        this.$router.push('/plan');
       }
     },
     moveReviewList() {
+      this.showModal = false;
       if (this.$route.path != '/review') {
         this.$router.push('/review');
       }
