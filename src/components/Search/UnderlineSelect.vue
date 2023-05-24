@@ -97,6 +97,10 @@ export default {
   display: none;
 }
 
+ul {
+  z-index: 130;
+}
+
 li {
   list-style: none;
   background-color: #f7f7f7;
