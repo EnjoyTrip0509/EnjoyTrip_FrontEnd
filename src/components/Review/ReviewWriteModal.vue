@@ -5,7 +5,7 @@
             max-width="600px"
         >
             <template v-slot:activator="{ attrs }">
-                <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal" v-bind="attrs">
+                <v-btn class="mx-2" fab small color="primary" @click="showWriteReviewModal" v-bind="attrs">
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>
             </template>

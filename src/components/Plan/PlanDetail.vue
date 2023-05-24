@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div class="ms-2 me-auto fw-bold mb-3">
+    <div class="plan-detail-header">
       {{ plan.title }} <br />
       {{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}
     </div>
-    <v-sheet class="mx-auto d-flex pa-2 justify-center" max-width="700">
+
+    <v-sheet class="mx-auto d-flex pa-2 justify-center mb-5" max-width="700">
       <v-slide-group show-arrows>
         <v-slide-item v-for="n in dayCount" :key="n" v-slot="{ active }">
           <v-btn
@@ -19,9 +20,8 @@
           </v-btn>
         </v-slide-item>
       </v-slide-group>
-      <v-btn @click="modify">{{isModifying ? '수정완료' : '수정'}}</v-btn>
+      <v-btn @click="modify">{{isModifying ? '적용' : '편집'}}</v-btn>
     </v-sheet>
-
 
     <v-row v-if="!isModifying" class="d-flex justify-center">
       <div id="map"></div>
@@ -34,7 +34,7 @@
                   small
                   fill-dot
                 >
-                  <v-row class="d-flex align-center">
+                  <div class="d-flex align-center">
                     <v-alert
                       :value="true"
                       color="blue"
@@ -42,20 +42,9 @@
                     >
                       {{ item.attraction.title }}
                     </v-alert>
-
+                    
                     <review-write-modal :planId="item.planId" :contentId="item.contentId"></review-write-modal>
-                    <v-btn
-                      v-if="isModifying"
-                      class="mx-2 d-inline"
-                      fab
-                      dark
-                      small
-                      color="red"
-                      @click="onClickDeleteLocation(item.id)"
-                    >
-                      <v-icon dark> mdi-minus </v-icon>
-                    </v-btn>
-                  </v-row>
+                  </div>
                 </v-timeline-item>
         </v-timeline>
       </v-card-text>
@@ -74,7 +63,7 @@
                   small
                   fill-dot
                 >
-                  <v-row class="d-flex align-center">
+                  <div class="d-flex align-center">
                     <v-alert
                       :value="true"
                       color="blue"
@@ -94,7 +83,7 @@
                     >
                       <v-icon dark> mdi-minus </v-icon>
                     </v-btn>
-                  </v-row>
+                  </div>
                 </v-timeline-item>
               </draggable>
         </v-timeline>
@@ -263,41 +252,17 @@ export default {
       this.contentId = '';
     }
   },
-
   mounted() {
-    const planId = this.$route.params.planId;
-    console.log(planId);
-
     if (!window.kakao || !window.kakao.maps) {
       const script = document.createElement("script");
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
       script.addEventListener("load", () => {
         kakao.maps.load(this.initMap);
-
-        // getPlanDetail(planId, ({ data }) => {
-        //   this.plan = data;
-        //   this.calcDay();
-        // });
-
-        // getPlanDayDetail(planId, 1, ({ data }) => {
-        //   this.dayLocations = data;
-        //   this.displayMarkers();
-        // });
       });
 
       document.head.appendChild(script);
     } else {
       this.initMap();
-
-      // getPlanDetail(planId, ({ data }) => {
-      //   this.plan = data;
-      //   this.calcDay();
-      // });
-
-      // getPlanDayDetail(planId, 1, ({ data }) => {
-      //   this.dayLocations = data;
-      //   this.displayMarkers();
-      // });
     }
   },
   filters: {
@@ -329,5 +294,10 @@ export default {
 .hide {
   width: 0px;
   height: 0px;
+}
+
+.plan-detail-header {
+  margin: 30px;
+  
 }
 </style>
