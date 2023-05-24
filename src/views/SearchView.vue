@@ -1,22 +1,26 @@
 <template>
-  <div class="search-container">
-    <div class="attraction-grid">
-      <template v-for="attraction in searchResults">
-        <attraction-card
-          :key="attraction.contentId"
-          :attraction="attraction"
-        ></attraction-card>
-      </template>
-    </div>
+  <div>
+    <attraction-search></attraction-search>
+    <div class="search-container">
+      <div class="attraction-grid">
+        <template v-for="attraction in searchResults">
+          <attraction-card
+            :key="attraction.contentId"
+            :attraction="attraction"
+          ></attraction-card>
+        </template>
+      </div>
 
-    <search-result-map></search-result-map>
+      <search-result-map></search-result-map>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapState } from "vuex";
 import AttractionCard from "@/components/AttractionCard.vue";
 import SearchResultMap from "@/components/SearchResultMap.vue";
+import AttractionSearch from "@/components/Search/AttractionSearch.vue";
 
 const searchStore = "searchStore";
 
@@ -30,16 +34,11 @@ export default {
   components: {
     AttractionCard,
     SearchResultMap,
+    AttractionSearch,
   },
 
   computed: {
     ...mapState(searchStore, ["searchResults"]),
-  },
-  created() {
-    this.search();
-  },
-  methods: {
-    ...mapActions(searchStore, ["search"]),
   },
 };
 </script>

@@ -4,6 +4,8 @@
 
 <script>
 import { mapGetters } from "vuex";
+import EventBus from "@/util/EventBus.js";
+
 const searchStore = "searchStore";
 
 export default {
@@ -15,7 +17,9 @@ export default {
       markers: [],
     };
   },
-  created() {},
+  created() {
+    EventBus.$on("updateMap", this.displayMarkers);
+  },
   methods: {
     initMap() {
       const container = document.getElementById("map");
@@ -27,6 +31,7 @@ export default {
 
       this.displayMarkers();
     },
+
     displayMarkers() {
       if (this.markers.length > 0) {
         this.markers.forEach((marker) => {
@@ -39,6 +44,8 @@ export default {
       const imageSize = new kakao.maps.Size(24, 35);
       const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
 
+      const temp = [];
+
       this.positions.forEach(({ title, latitude, longitude }) => {
         const marker = new kakao.maps.Marker({
           map: this.map,
@@ -47,7 +54,7 @@ export default {
           image: markerImage,
         });
 
-        this.markers.push(marker);
+        temp.push(marker);
       });
 
       const bounds = this.positions.reduce(
@@ -57,6 +64,7 @@ export default {
       );
 
       this.map.setBounds(bounds);
+      this.markers = temp;
     },
   },
   mounted() {

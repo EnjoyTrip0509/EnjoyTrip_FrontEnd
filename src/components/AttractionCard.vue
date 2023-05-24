@@ -1,6 +1,6 @@
 <template>
   <div class="card-container" @click.stop="onClickCard(attraction.contentId)">
-    <img :src="attraction.firstImage" alt="관광지 이미지" />
+    <img :src="attraction.firstImage || require(`@/assets/planet-earth.png`)" alt="관광지 이미지" />
     <span>{{ attraction.title }}</span>
     <span>{{ attraction.addr1 }}</span>
   </div>

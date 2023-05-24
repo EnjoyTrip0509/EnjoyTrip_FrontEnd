@@ -67,9 +67,9 @@ export default {
     ...mapMutations(userStore, ["SET_USER_INFO"]),
     close() {
       EventBus.$emit("showDialog");
+      EventBus.$emit("closeDialog");
     },
     changeUserInfo() {
-      console.log(this.modifiedUserInfo);
       if (
         this.modifiedUserInfo.password !== this.modifiedUserInfo.passwordCheck
       ) {
@@ -81,6 +81,7 @@ export default {
         ({ data }) => {
           this.SET_USER_INFO(data.userInfo);
           EventBus.$emit("showDialog");
+          EventBus.$emit("closeDialog");
         },
 
         (error) => {

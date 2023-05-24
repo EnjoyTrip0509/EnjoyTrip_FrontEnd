@@ -1,51 +1,71 @@
 <template>
   <div class="header-container">
     <header>
-      <router-link to="/">logo</router-link>
-      <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
-        {{ userInfo.name }}님 안녕하세요!
-        <div v-if="showModal" class="loginDropDown" @click.stop="">
-          <profile-menu-item
-            title="로그아웃"
-            event="logout"
-          ></profile-menu-item>
-          <profile-menu-item
-            title="내 여행 계획"
-            event="movePlanList"
-          ></profile-menu-item>
-          <profile-menu-item
-            title="내 리뷰"
-            event="moveReviewList"
-          ></profile-menu-item>
-          <my-page-modal></my-page-modal>
-        </div>
+      <router-link to="/">
+        <img :src="require(`@/assets/logo_bold_negative.png`)" class="logo"
+      /></router-link>
+
+      <div class="center-img">
+        <img :src="require(`@/assets/planet-earth.png`)" />
       </div>
-      <button class="user-menu" @click.stop="onClickProfile" v-else>
-        <hamburger-button :clicked="showModal"></hamburger-button>
-        <font-awesome-icon :icon="['fas', 'user']" />
-        <div v-if="showModal" class="loginDropDown" @click.stop="">
-          <profile-menu-item
-            title="회원가입"
-            event="showRegisterModal"
-          ></profile-menu-item>
-          <profile-menu-item
-            title="로그인"
-            event="showLoginModal"
-          ></profile-menu-item>
-        </div>
-      </button>
+      <div class="user-button-container" v-if="this.isLogin">
+        <button class="user-menu" @click.stop="onClickProfile">
+          <hamburger-button :clicked="showModal"></hamburger-button>
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <div
+            v-if="showModal"
+            class="loginDropDown"
+            @click.stop=""
+            ref="loginDropDown"
+          >
+            <profile-menu-item
+              :title="userInfo.id"
+              event=""
+              :disabled="true"
+            ></profile-menu-item>
+
+            <profile-menu-item
+              title="로그아웃"
+              event="logout"
+            ></profile-menu-item>
+            <my-page-modal></my-page-modal>
+
+            <profile-menu-item
+              title="내 여행 계획"
+              event="movePlanList"
+            ></profile-menu-item>
+            <profile-menu-item
+              title="내 리뷰"
+              event="moveReviewList"
+            ></profile-menu-item>            
+          </div>
+        </button>
+      </div>
+
+      <div class="user-button-container" v-else>
+        <button class="user-menu" @click.stop="onClickProfile">
+          <hamburger-button :clicked="showModal"></hamburger-button>
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <div
+            v-if="showModal"
+            class="loginDropDown"
+            @click.stop=""
+            ref="loginDropDown"
+          >
+            <register-modal></register-modal>
+            <login-modal></login-modal>
+          </div>
+        </button>
+      </div>
     </header>
-    <register-modal v-if="openRegisterModal"></register-modal>
-    <login-modal v-if="openLoginModal"></login-modal>
-    <!-- <div class="bg" @click.stop="onClickBackground"></div> -->
   </div>
 </template>
 
 <script>
 import HamburgerButton from "./HamburgerButton.vue";
 import ProfileMenuItem from "./ProfileMenuItem.vue";
-import RegisterModal from "@/components/RegisterModal.vue";
-import LoginModal from "@/components/LoginModal.vue";
+import LoginModal from "@/components/User/LoginModal.vue";
+import RegisterModal from "@/components/User/RegisterModal.vue";
 import MyPageModal from "./User/MyPageModal.vue";
 import EventBus from "@/util/EventBus.js";
 import { mapActions, mapState } from "vuex";
@@ -80,6 +100,10 @@ export default {
     EventBus.$on("logout", this.logout);
     EventBus.$on("movePlanList", this.movePlanList);
     EventBus.$on("moveReviewList", this.moveReviewList);
+    EventBus.$on("showDialog", this.onClickUserInfo);
+    EventBus.$on("showLoginDialog", this.onClickUserInfo);
+    EventBus.$on("showRegisterDialog", this.onClickUserInfo);
+    EventBus.$on("closeDialog", this.onClickProfile);
   },
   methods: {
     ...mapActions(userStore, ["logoutUser"]),
@@ -91,14 +115,22 @@ export default {
     },
     onClickProfile() {
       this.showModal = !this.showModal;
+
+      if (this.showModal) {
+        document.addEventListener("click", this.documentClick);
+      } else {
+        document.removeEventListener("click", this.documentClick);
+      }
     },
     showRegisterModal() {
       this.showModal = false;
       this.openRegisterModal = true;
+      document.removeEventListener("click", this.documentClick);
     },
     showLoginModal() {
       this.showModal = false;
       this.openLoginModal = true;
+      document.removeEventListener("click", this.documentClick);
     },
     closeRegisterModal() {
       this.openRegisterModal = false;
@@ -109,16 +141,39 @@ export default {
     logout() {
       this.logoutUser();
       this.showModal = false;
+      document.removeEventListener("click", this.documentClick);
     },
     movePlanList() {
       this.showModal = false;
+      document.removeEventListener("click", this.documentClick);
+
       this.$router.push({ name: "planList" });
     },
     moveReviewList() {
       if (this.$route.path != '/review') {
         this.$router.push('/review');
       }
-    }
+    },
+    documentClick(e) {
+      const el = this.$refs.loginDropDown;
+      const target = e.target;
+
+      if (!el) {
+        return;
+      }
+
+      console.log(el.contains(target), el, target);
+
+      if (el !== target && !el.contains(target)) {
+        this.showModal = false;
+      }
+    },
+    onClickUserInfo() {
+      document.removeEventListener("click", this.documentClick);
+    },
+    onClickLogo() {
+      this.$router.push("/");
+    },
   },
 };
 </script>
@@ -128,7 +183,7 @@ export default {
   top: 0;
   position: sticky;
   z-index: 100;
-  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
+  background-color: black;
 }
 
 header {
@@ -139,6 +194,30 @@ header {
   justify-content: space-between;
   padding: 0 80px;
   align-items: center;
+}
+
+header a {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.logo {
+  cursor: pointer;
+  height: 60%;
+}
+
+.center-img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-img img {
+  height: 60%;
+  /* transform: translateX(-110px); */
 }
 
 #search-bar {
@@ -167,13 +246,6 @@ span {
   font-size: 14px;
 }
 
-.bg {
-  height: 100vh;
-  /* background-color: rgb(0 0 0 / 25%);
-   */
-  background-color: #22222222;
-}
-
 .loginDropDown {
   cursor: default;
   width: fit-content;
@@ -187,6 +259,7 @@ span {
   z-index: 1000;
   border-radius: 10px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.15);
+  color: black;
 }
 
 .outer {
@@ -208,10 +281,23 @@ span {
   border-radius: 21px;
   transition: box-shadow 0.2s ease;
   height: 42px;
-  width: 77px;
+  width: 72px;
 }
 
 .myprofile {
   position: relative;
+  color: white;
+  height: 42px;
+  width: 240px;
+  display: flex;
+  align-items: center;
+}
+
+.user-button-container {
+  height: 100%;
+  width: 240px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>
