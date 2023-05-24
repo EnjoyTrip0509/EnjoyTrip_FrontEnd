@@ -41,14 +41,14 @@
                 <v-timeline-item
                   v-for="item in dayLocations"
                   :key="item.id"
-                  color="blue"
+                  :color="contentColor[item.attraction.contentTypeId]"
                   small
                   fill-dot
                 >
                   <div class="d-flex align-center">
                     <v-alert
                       :value="true"
-                      color="blue"
+                      :color="contentColor[item.attraction.contentTypeId]"
                       class="white--text mx-1 mt-3 w-100"
                     >
                       {{ item.attraction.title }}
@@ -70,14 +70,14 @@
                 <v-timeline-item
                   v-for="item in modifiedLocations"
                   :key="item.id"
-                  color="blue"
+                  :color="contentColor[item.attraction.contentTypeId]"
                   small
                   fill-dot
                 >
                   <div class="d-flex align-center">
                     <v-alert
                       :value="true"
-                      color="blue"
+                      :color="contentColor[item.attraction.contentTypeId]"
                       class="white--text mx-1 mt-3 w-100"
                     >
                       {{ item.attraction.title }}
@@ -116,6 +116,7 @@ import { getPlanDayDetail, getPlanDetail, deleteLocation, updatePlan } from "@/a
 import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
 import draggable from 'vuedraggable'
 import _ from 'lodash';
+import contentColor from "@/constant/contentColor";
 
 export default {
   name: "PlanDetail",
@@ -135,6 +136,7 @@ export default {
       openWriteReviewModal: false,
       contentId:'',
       drag: false,
+      contentColor,
     };
   },
 
