@@ -85,6 +85,8 @@ export default {
     EventBus.$on("closeLoginModal", this.closeLoginModal);
     EventBus.$on("logout", this.logout);
     EventBus.$on("movePlanList", this.movePlanList);
+    EventBus.$on("showDialog", this.onClickUserInfo);
+    EventBus.$on("closeDialog", this.onClickProfile);
   },
   methods: {
     ...mapActions(userStore, ["logoutUser"]),
@@ -138,9 +140,14 @@ export default {
         return;
       }
 
+      console.log(el.contains(target), el, target);
+
       if (el !== target && !el.contains(target)) {
         this.showModal = false;
       }
+    },
+    onClickUserInfo() {
+      document.removeEventListener("click", this.documentClick);
     },
   },
 };

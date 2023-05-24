@@ -66,6 +66,7 @@ export default {
     },
     closeDialog() {
       this.dialog = false;
+      EventBus.$emit("closeDialog");
     },
     modifyUserInfo() {
       this.isModifying = true;
@@ -76,6 +77,7 @@ export default {
     onClickOutside() {
       this.isModifying = false;
       this.showForm = false;
+      EventBus.$emit("closeDialog");
     },
     showModifyForm() {
       this.isModifying = false;
