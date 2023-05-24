@@ -17,6 +17,7 @@
           :length="calculatePageNo"
           rounded="circle"
           @input="onClickPage"
+          :total-visible="7"
         ></v-pagination>
       </div>
       <search-result-map></search-result-map>
