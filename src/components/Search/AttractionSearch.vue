@@ -130,6 +130,9 @@ export default {
   flex-direction: column;
 }
 
+.searchbar-section span {
+  font-size: 40px;
+}
 .searchbar-section {
   display: flex;
   justify-content: center;

@@ -1,6 +1,6 @@
 <template>
   <div class="hotplace-section">
-    <div class="text-h3">TRIP US에서 선정한 HOT PLACE</div>
+    <div class="hotplace-title">TRIP US에서 선정한 HOT PLACE</div>
     <v-slide-group class="pa-4 w-75 slide" show-arrows>
       <v-slide-item v-for="place in hotPlaces" :key="place.contentId">
         <hot-place-card :attraction="place"></hot-place-card>
@@ -50,5 +50,11 @@ export default {
 .slide {
   display: flex;
   justify-content: center;
+}
+
+.hotplace-title {
+  font-family: "KBO-Dia-Gothic_bold";
+  font-size: 45px;
+
 }
 </style>
