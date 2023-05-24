@@ -152,7 +152,7 @@ export default {
 }
 
 .searchbutton-section {
-  margin-top: 40px;
+  margin-top: 50px;
   display: flex;
   justify-content: center;
 }
@@ -165,6 +165,10 @@ export default {
   color: #ffffffff;
   border-radius: 50px;
   cursor: pointer;
+}
+
+.searchbar-section span {
+  font-size: 40px;
 }
 
 .title {
