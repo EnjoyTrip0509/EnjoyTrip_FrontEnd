@@ -7,15 +7,14 @@
     >
       <template v-slot:activator="{ attrs }">
         <profile-menu-item
-          title="로그인"
+          title="회원가입"
           v-bind="attrs"
-          event="showLoginDialog"
+          event="showRegisterDialog"
         ></profile-menu-item>
       </template>
 
-      <div class="login-section">
-        <span class="text-h5 mb-4 mypage-title">로그인</span>
-
+      <div class="register-section">
+        <span class="text-h5 mb-4 mypage-title">회원가입</span>
         <v-text-field label="아이디" v-model="user.id"></v-text-field>
         <v-text-field
           label="비밀번호"
@@ -23,8 +22,14 @@
           v-model="user.password"
         ></v-text-field>
 
+        <v-text-field label="이름" v-model="user.name"></v-text-field>
+
+        <v-text-field label="이메일" v-model="user.email"></v-text-field>
+
         <div class="button-box">
-          <v-btn color="green darken-1" text @click="onLogin">로그인</v-btn>
+          <v-btn color="green darken-1" text @click="onRegister"
+            >회원가입</v-btn
+          >
         </div>
       </div>
     </v-dialog>
@@ -34,11 +39,12 @@
 import { mapActions } from "vuex";
 import EventBus from "@/util/EventBus.js";
 import ProfileMenuItem from "@/components/ProfileMenuItem.vue";
+import { register } from "@/api/user.js";
 
 const userStore = "userStore";
 
 export default {
-  name: "LoginModal",
+  name: "RegisterModal",
   components: {
     ProfileMenuItem,
   },
@@ -47,18 +53,28 @@ export default {
       user: {
         id: "",
         password: "",
+        name: "",
+        emil: "",
       },
       dialog: false,
     };
   },
   created() {
-    EventBus.$on("showLoginDialog", this.showLoginDialog);
+    EventBus.$on("showRegisterDialog", this.showRegisterDialog);
   },
   methods: {
     ...mapActions(userStore, ["loginUser"]),
-    onLogin() {
-      this.loginUser(this.user);
-      EventBus.$emit("closeDialog");
+    onRegister() {
+      register(
+        this.user,
+        () => {
+          alert("회원가입에 성공하였습니다!");
+          EventBus.$emit("closeDialog");
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     },
     close() {
       //   EventBus.$emit("closeLoginModal");
@@ -66,7 +82,7 @@ export default {
     onClickOutside() {
       EventBus.$emit("closeDialog");
     },
-    showLoginDialog() {
+    showRegisterDialog() {
       this.dialog = !this.dialog;
     },
   },
@@ -74,7 +90,7 @@ export default {
 </script>
 
 <style scoped>
-.login-section {
+.register-section {
   padding: 36px 36px 24px 36px;
   background: white;
 }
