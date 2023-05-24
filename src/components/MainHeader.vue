@@ -19,7 +19,7 @@
             ref="loginDropDown"
           >
             <profile-menu-item
-              :title="userInfo.id"
+              :title="userInfo.name"
               event=""
               :disabled="true"
             ></profile-menu-item>
@@ -147,7 +147,9 @@ export default {
       this.showModal = false;
       document.removeEventListener("click", this.documentClick);
 
-      this.$router.push({ name: "planList" });
+      if (this.$route.path != '/plan/list') {
+        this.$router.push('/plan/list');
+      }
     },
     moveReviewList() {
       if (this.$route.path != '/review') {
