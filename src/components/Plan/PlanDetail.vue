@@ -1,8 +1,19 @@
 <template>
   <div>
     <div class="plan-detail-header">
-      {{ plan.title }} <br />
-      {{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}
+      <div class="travel-info">
+        <div class="image-container">
+          <img :src="require(`@/assets/palace.jpg`)" :alt="plan.id" class="trip-image">
+        </div>
+        <div class="info-container">
+          <h1 class="title">{{ plan.title }}</h1>
+          <p class="description">{{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}</p>
+          <div class="actions">
+            <button class="edit-btn">편집</button>
+            <button class="remove-btn">삭제</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <v-sheet class="mx-auto d-flex pa-2 justify-center mb-5" max-width="700">
@@ -23,7 +34,7 @@
       <v-btn @click="modify">{{isModifying ? '적용' : '편집'}}</v-btn>
     </v-sheet>
 
-    <v-row v-if="!isModifying" class="d-flex justify-center">
+    <v-row v-if="!isModifying" class="d-flex justify-center" max-width="800">
       <div id="map"></div>
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
         <v-timeline dense class="w-100">
@@ -38,7 +49,7 @@
                     <v-alert
                       :value="true"
                       color="blue"
-                      class="white--text mx-1 mt-3 w-75"
+                      class="white--text mx-1 mt-3 w-100"
                     >
                       {{ item.attraction.title }}
                     </v-alert>
@@ -67,7 +78,7 @@
                     <v-alert
                       :value="true"
                       color="blue"
-                      class="white--text mx-1 mt-3 w-75"
+                      class="white--text mx-1 mt-3 w-100"
                     >
                       {{ item.attraction.title }}
                     </v-alert>
@@ -93,17 +104,16 @@
 </template>
 
 <script>
-import { getPlanDayDetail, getPlanDetail, deleteLocation, updatePlan } from "@/api/plan.js";
+import { getPlanDayDetail, getPlanDetail, deleteLocation, updatePlan } from "@/api/plan.js"
 import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
 import draggable from 'vuedraggable'
 import _ from 'lodash';
-
 
 export default {
   name: "PlanDetail",
   components: {
     ReviewWriteModal,
-    draggable
+    draggable,
   },
   data() {
     return {
@@ -116,7 +126,7 @@ export default {
       markers: [],
       openWriteReviewModal: false,
       contentId:'',
-      drag: false
+      drag: false,
     };
   },
   methods: {
@@ -250,7 +260,7 @@ export default {
     closeWriteReviewModal() {
       this.openWriteReviewModal = false;
       this.contentId = '';
-    }
+    },
   },
   mounted() {
     if (!window.kakao || !window.kakao.maps) {
@@ -298,6 +308,76 @@ export default {
 
 .plan-detail-header {
   margin: 30px;
-  
+  justify-content: center;
+  display: flex;
 }
+
+.travel-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f5f5f5;
+  padding: 16px;
+  margin-bottom: 16px;
+  margin: 0.5rem 0;
+  padding: 3rem 1.5rem;
+  background: white;
+  border-radius: 20px;
+  width: 600px;
+}
+
+.image-container {
+  flex: 0 0 30%;
+  margin-right: 16px;
+}
+
+.trip-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+}
+
+.info-container {
+  flex: 1;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+}
+
+.edit-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.remove-btn {
+  background-color: #F5483C;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.btn:last-child {
+  margin-right: 0;
+}
+
+
 </style>
