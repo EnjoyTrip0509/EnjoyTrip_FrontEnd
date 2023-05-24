@@ -77,6 +77,7 @@ export default {
 .search-container {
   display: flex;
   width: 100%;
+  margin-top: 50px;
 }
 
 .attraction-grid {

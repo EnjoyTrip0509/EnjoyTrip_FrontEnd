@@ -128,6 +128,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  margin-top: 40px;
 }
 
 .searchbar-section {
