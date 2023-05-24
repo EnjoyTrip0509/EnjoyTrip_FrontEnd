@@ -2,7 +2,12 @@
   <div class="header-container">
     <header>
       <router-link to="/">logo</router-link>
-      <div v-if="this.isLogin" class="myprofile" @click.stop="onClickProfile">
+      <div
+        v-if="this.isLogin"
+        class="myprofile"
+        @click.stop="onClickProfile"
+        ref="loginDropDown"
+      >
         {{ userInfo.name }}님 안녕하세요!
         <div v-if="showModal" class="loginDropDown" @click.stop="">
           <profile-menu-item
@@ -19,7 +24,12 @@
       <button class="user-menu" @click.stop="onClickProfile" v-else>
         <hamburger-button :clicked="showModal"></hamburger-button>
         <font-awesome-icon :icon="['fas', 'user']" />
-        <div v-if="showModal" class="loginDropDown" @click.stop="">
+        <div
+          v-if="showModal"
+          class="loginDropDown"
+          @click.stop=""
+          ref="loginDropDown"
+        >
           <profile-menu-item
             title="회원가입"
             event="showRegisterModal"
@@ -75,6 +85,8 @@ export default {
     EventBus.$on("closeLoginModal", this.closeLoginModal);
     EventBus.$on("logout", this.logout);
     EventBus.$on("movePlanList", this.movePlanList);
+    EventBus.$on("showDialog", this.onClickUserInfo);
+    EventBus.$on("closeDialog", this.onClickProfile);
   },
   methods: {
     ...mapActions(userStore, ["logoutUser"]),
@@ -86,14 +98,22 @@ export default {
     },
     onClickProfile() {
       this.showModal = !this.showModal;
+
+      if (this.showModal) {
+        document.addEventListener("click", this.documentClick);
+      } else {
+        document.removeEventListener("click", this.documentClick);
+      }
     },
     showRegisterModal() {
       this.showModal = false;
       this.openRegisterModal = true;
+      document.removeEventListener("click", this.documentClick);
     },
     showLoginModal() {
       this.showModal = false;
       this.openLoginModal = true;
+      document.removeEventListener("click", this.documentClick);
     },
     closeRegisterModal() {
       this.openRegisterModal = false;
@@ -104,10 +124,30 @@ export default {
     logout() {
       this.logoutUser();
       this.showModal = false;
+      document.removeEventListener("click", this.documentClick);
     },
     movePlanList() {
       this.showModal = false;
+      document.removeEventListener("click", this.documentClick);
+
       this.$router.push({ name: "planList" });
+    },
+    documentClick(e) {
+      const el = this.$refs.loginDropDown;
+      const target = e.target;
+
+      if (!el) {
+        return;
+      }
+
+      console.log(el.contains(target), el, target);
+
+      if (el !== target && !el.contains(target)) {
+        this.showModal = false;
+      }
+    },
+    onClickUserInfo() {
+      document.removeEventListener("click", this.documentClick);
     },
   },
 };
