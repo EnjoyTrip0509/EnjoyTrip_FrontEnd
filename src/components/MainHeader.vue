@@ -28,11 +28,16 @@
               title="로그아웃"
               event="logout"
             ></profile-menu-item>
+            <my-page-modal></my-page-modal>
+
             <profile-menu-item
               title="내 여행 계획"
               event="movePlanList"
             ></profile-menu-item>
-            <my-page-modal></my-page-modal>
+            <profile-menu-item
+              title="내 리뷰"
+              event="moveReviewList"
+            ></profile-menu-item>            
           </div>
         </button>
       </div>
@@ -94,6 +99,7 @@ export default {
     EventBus.$on("closeLoginModal", this.closeLoginModal);
     EventBus.$on("logout", this.logout);
     EventBus.$on("movePlanList", this.movePlanList);
+    EventBus.$on("moveReviewList", this.moveReviewList);
     EventBus.$on("showDialog", this.onClickUserInfo);
     EventBus.$on("showLoginDialog", this.onClickUserInfo);
     EventBus.$on("showRegisterDialog", this.onClickUserInfo);
@@ -142,6 +148,11 @@ export default {
       document.removeEventListener("click", this.documentClick);
 
       this.$router.push({ name: "planList" });
+    },
+    moveReviewList() {
+      if (this.$route.path != '/review') {
+        this.$router.push('/review');
+      }
     },
     documentClick(e) {
       const el = this.$refs.loginDropDown;
