@@ -7,6 +7,12 @@
       </div>
       <div class="address-section" >{{ attraction.addr1 }}</div>
       <div class="description-section">{{ attraction.overview }}</div>
+      <div class="review-section">
+        <div class="review-section-header mb-3"><font-awesome-icon :icon="['fas', 'star']" class="icon-star mr-2 mb-1"/> 리뷰</div>
+        <div v-if="attraction.contentId" class="review-section-list">
+          <review-list-by-content-id :contentId="attraction.contentId"></review-list-by-content-id>
+        </div>
+      </div>
       <add-location-modal v-if="openAddLocationModal" :contentId="attraction.contentId" @closeAddLocationModal="closeAddLocationModal" @showAddPlanModal="showAddPlanModal"></add-location-modal>
       <add-plan-modal v-if="openAddPlanModal" @closeAddPlanModal="closeAddPlanModal"></add-plan-modal>
     </div>
@@ -16,11 +22,13 @@
 import AddLocationModal from "@/components/Plan/AddLocationModal.vue";
 import AddPlanModal from "@/components/Plan/AddPlanModal.vue";
 import { getAttractionDetail } from "@/api/attraction.js";
+import ReviewListByContentId from "@/components/Review/ReveiwListByContentId.vue"
 
 export default {
   components: {
     AddLocationModal,
     AddPlanModal,
+    ReviewListByContentId,
   },
   data() {
     return {
@@ -109,5 +117,18 @@ export default {
 
   }
 
+.review-section-header {
+  font-size: 23px;
+  font-weight: 700;
+  padding: 0 24px 0 24px;
+  height: 63px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.icon-star {
+  color: #FFD033;
+}
 
 </style>

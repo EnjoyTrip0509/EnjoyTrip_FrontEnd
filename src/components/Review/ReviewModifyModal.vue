@@ -5,13 +5,15 @@
             max-width="600px"
         >
             <template v-slot:activator="{ attrs }">
-                <v-btn class="mx-2" fab small color="primary" @click="showWriteReviewModal" v-bind="attrs">
-                    <v-icon>mdi-pencil</v-icon>
-                </v-btn>
+                <div>
+                    <span class="modifyBtn" type="button" @click="showModifyReviewModal" v-bind="attrs">
+                        <font-awesome-icon :icon="['fas', 'pencil']"/>
+                    </span>
+                </div>
             </template>
-            <div v-if="this.dialog" class="content">
+            <div v-if="this.dialog" class="content"> 
                 <div class="review-header">
-                    <div class="review-header-title">리뷰 작성 <font-awesome-icon class="review-icon" :icon="['far', 'message']" /></div>
+                    <div class="review-header-title">리뷰 수정</div>
                 </div>
                 
                 <div class="review-info">
@@ -29,18 +31,21 @@
 
                 <div class="form-group mt-5 ml-10 mr-10">
                     <v-textarea
+                        counter
                         ref="reviewTextArea"
-                        solo
+                        background-color="grey lighten-3"
                         v-model="content" 
                         no-resize
-                        placeholder="리뷰를 작성해주세요." />
+                        rounded
+                        />
                 </div>
 
                 <div class="button-box">
-                    <v-btn color="green darken-1" text @click="registerReview">등록</v-btn>
-                    <v-btn color="red darken-1 " text @click="closeWriteReviewModal">닫기</v-btn>
+                    <v-btn color="green darken-1" text @click="updateReview">수정</v-btn>
+                    <v-btn color="red darken-1 " text @click="closeModifyReviewModal">닫기</v-btn>
                 </div>
             </div>
+
         </v-dialog>
     </div>
 </template>
@@ -48,72 +53,79 @@
 <script>
 import { getAttractionDetail } from "@/api/attraction.js";
 import { getPlanDetail } from "@/api/plan.js";
-import { addReview } from "@/api/review.js";
+import { modifyReview } from "@/api/review.js";
 import { mapState } from "vuex";
 
 const userStore = "userStore";
 
 export default {
-    name: "ReviewWriteModal",
+    name: "ReviewModfiyModal",
+    props: {
+        review: {},
+    },
     data() {
         return {
             dialog: false,
             attraction: {},
             plan: {},
-            content: ''
+            content: '',
         }
-    },
-    props: {
-        planId: Number,
-        contentId : Number,
     },
     computed: {
         ...mapState(userStore, ["userInfo"]),
     },
     methods: {
-        showWriteReviewModal() {
+        showModifyReviewModal() {
             this.dialog = !this.dialog;
-
-            if (this.dialog) {
+            
+            if (this.dialog && this.review != null) {
                 getAttractionDetail(
-                    this.contentId, 
-                    ({ data }) => {
-                        this.attraction = data;
-                    },
-                    (error) => console.log(error)
-                    );
-                
-                getPlanDetail(
-                    this.planId, 
-                    ({ data }) => {
-                        this.plan = data;
-                    },
-                    (error) => console.log(error)
-                    );
+                this.review.contentId, 
+                ({ data }) => {
+                    this.attraction = data;
+                },
+                (error) => console.log(error)
+                );
+            
+            getPlanDetail(
+                this.review.planId, 
+                ({ data }) => {
+                    this.plan = data;
+                },
+                (error) => console.log(error)
+                );
             }
+
+            this.content = this.review.content;
         },
-        closeWriteReviewModal() {
-            this.content = '';
+        closeModifyReviewModal() {
+            this.content = this.review.content;
             this.dialog = false;
         },
-        registerReview() {
+        updateReview() {
             if (this.content == '' || this.content == null || this.content == undefined) {
                 this.$refs["reviewTextArea"].focus();
 
                 return;
             }
 
-            const review = { contentId: this.attraction.contentId, planId:this.planId, subject: "review", content: this.content, userId: this.userInfo.id };
-
-            addReview(
+            const review = { articleNo: this.review.articleNo, contentId: this.review.contentId, planId: this.review.planId, subject: this.review.subject, content: this.content, userId: this.review.id };
+            
+            modifyReview(
                 review,
                 () => {
-                    this.closeWriteReviewModal();
-                });
+                    this.closeModifyReviewModal();
+                    this.$emit("modifyReview");
+                }
+            )
         }
     },
     filters: {
         dateFormat(value) {
+            if (value == null || value == '' || value == undefined) {
+                return;
+            }
+
             return value.substring(0,4) + "년 " + value.substring(5,7) + "월 " + value.substring(8,10) + "일";
         }
     }
@@ -126,9 +138,8 @@ export default {
     border-radius: 20px;
 }
 
-.review-icon {
-    height: 20px;
-    width: 20px;
+.modifyBtn {
+    color: #3f42db;
 }
 
 .review-header {
@@ -153,7 +164,10 @@ export default {
     width: 190px;
     aspect-ratio: 1/1;
     border-radius: 40px;
-    margin-left: 25px;
+}
+
+.form-group {
+    margin: 10px;
 }
 
 .review-info-content {
