@@ -2,6 +2,7 @@
   <v-card
     class="ma-4 pointer pa-6"
     max-width="350"
+    max-height="450"
     @click="onClickHotPlaceCard(attraction.contentId)"
   >
     <template slot="progress">
