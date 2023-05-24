@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="ma-4 pointer"
-    max-width="374"
+    class="ma-4 pointer pa-6"
+    max-width="350"
     @click="onClickHotPlaceCard(attraction.contentId)"
   >
     <template slot="progress">
@@ -12,15 +12,16 @@
       ></v-progress-linear>
     </template>
 
-    <v-img height="250" :src="attraction.firstImage"></v-img>
+    <v-img
+      height="250"
+      :src="attraction.firstImage || require(`@/assets/earth-bg.png`)"
+    ></v-img>
 
     <v-card-title>{{ attraction.title | attractionTitleSlice }}</v-card-title>
 
     <v-card-text>
       <p>{{ attraction.addr1 }}</p>
     </v-card-text>
-
-    <v-divider class="mx-4"></v-divider>
   </v-card>
 </template>
 <script>
@@ -36,7 +37,6 @@ export default {
       this.$router.push({ name: "attraction", params: { contentId } });
     },
   },
-
   filters: {
     attractionTitleSlice(value) {
       if (value == null) {

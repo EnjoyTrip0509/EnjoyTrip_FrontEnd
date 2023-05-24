@@ -7,7 +7,7 @@ export async function searchAttractions(location, success, fail) {
 }
 
 export async function getAttractionDetail(contentId, success, fail) {
-    await api.get(`attraction/${contentId}`).then(success). catch (fail);
+    await api.get(`attraction/${contentId}`).then(success).catch(fail);
 }
 
 export async function getHotPlace(success, fail) {
