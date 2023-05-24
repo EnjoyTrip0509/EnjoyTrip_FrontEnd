@@ -57,17 +57,24 @@ export default {
           value: sidoCode,
           title: sidoName,
         }));
-        this.SET_SIDO(data[0]);
+
+        getGugun(
+          this.sido.sidoCode,
+          ({ data }) => {
+            this.guguns = data.map(({ gugunCode, gugunName }) => ({
+              value: gugunCode,
+              title: gugunName,
+            }));
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
       },
       (error) => {
         console.log(error);
       }
     );
-
-    this.SET_CONTENT({
-      contentCode: this.contents[0].value,
-      contentName: this.contents[0].title,
-    });
 
     EventBus.$on("selectSido", this.selectSido);
     EventBus.$on("selectGugun", this.selectGugun);

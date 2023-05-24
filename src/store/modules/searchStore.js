@@ -15,11 +15,12 @@ const searchStore = {
             contentCode: '',
             contentName: ''
         },
-        searchResults: null
+        searchResults: null,
+        totalCnt: 0,
     },
     getters: {
         positions: (state) => {
-            return state.searchResults.map(({title, latitude, longitude}) => ({ title, latitude, longitude}));
+            return state.searchResults.map(({ title, latitude, longitude }) => ({ title, latitude, longitude }));
         }
     },
     mutations: {
@@ -34,6 +35,9 @@ const searchStore = {
         },
         SET_RESULT: (state, results) => {
             state.searchResults = results;
+        },
+        SET_TOTAL_COUNT: (state, totalCnt) => {
+            state.totalCnt = totalCnt;
         }
     },
     actions: {
@@ -42,10 +46,12 @@ const searchStore = {
                 {
                     sidoCode: state.sido.sidoCode,
                     gugunCode: state.gugun.gugunCode,
-                    contentTypeId: state.content.contentCode
+                    contentTypeId: state.content.contentCode,
+                    pageNo: 0,
                 },
                 ({ data }) => {
-                    commit("SET_RESULT", data);
+                    commit("SET_RESULT", data.attractions);
+                    commit("SET_TOTAL_COUNT", data.resultCount);
                     callback();
                 },
                 (error) => {
@@ -53,6 +59,26 @@ const searchStore = {
                 }
             )
         },
+
+        searchByPage({ state, commit }, { pageIndex, callback }) {
+            searchAttractions(
+                {
+                    sidoCode: state.sido.sidoCode,
+                    gugunCode: state.gugun.gugunCode,
+                    contentTypeId: state.content.contentCode,
+                    pageNo: pageIndex,
+                },
+                ({ data }) => {
+                    console.log(data);
+                    commit("SET_RESULT", data.attractions);
+                    callback();
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+
+        }
     }
 }
 
