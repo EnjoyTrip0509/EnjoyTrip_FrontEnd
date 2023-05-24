@@ -13,9 +13,7 @@
             </div>
 
             <div class="button-box">
-                <span class="modifyBtn" type="button" @click="modifyReview">
-                    <font-awesome-icon :icon="['fas', 'pencil']"/>
-                </span>
+                <review-modify-modal :review="review" @modifyReview="modifyReview"></review-modify-modal>
                 <span class="removeBtn" type="button" @click="deleteReview">
                     <font-awesome-icon :icon="['far', 'fa-trash-alt']"/>
                 </span>
@@ -30,8 +28,13 @@
 
 <script>
 import { getAttractionDetail } from "@/api/attraction"
+import ReviewModifyModal from "./ReviewModifyModal.vue"
+
 export default {
     name: "ReveiwItemByUser",
+    components: {
+        ReviewModifyModal
+    },
     props: {
         review: {},
     },
@@ -52,11 +55,11 @@ export default {
         deleteReview() {
             this.$emit("deleteReview");
         },
-        modifyReview() {
-            this.$emit("modifyReview");
-        },
         moveAttractionDetail(contentId) {
             this.$router.push({name: 'attraction', params: { contentId }});
+        },
+        modifyReview() {
+            this.$emit("updateReviewList");
         }
     },
     filters: {
@@ -92,10 +95,6 @@ li {
 
 .removeBtn {
     color: #de4343;
-}
-
-.modifyBtn {
-    color: #3f42db;
 }
 
 .list-enter-active, .list-leave-active {

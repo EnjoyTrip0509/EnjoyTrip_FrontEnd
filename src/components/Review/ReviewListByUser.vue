@@ -1,6 +1,6 @@
 <template>
     <ul>
-        <review-item-by-user v-for="review in reviews" :key="review.articleNo" :review="review" @modifyReview="modifyReview(review)" @deleteReview="deleteReviewFromList(review.articleNo)"></review-item-by-user>
+        <review-item-by-user v-for="review in reviews" :key="review.articleNo" :review="review" @deleteReview="deleteReviewFromList(review.articleNo)" @updateReviewList="updateReviewList"></review-item-by-user>
     </ul>
 </template>
 
@@ -32,7 +32,6 @@ export default {
             findReviewsByUserId(
                 this.userInfo.id,
                 ({ data }) => {
-                    console.log(data);
                     this.reviews = data;
                 }
             );
@@ -45,8 +44,8 @@ export default {
                 }
             )
         },
-        modifyReview(review) {
-            console.log(review);
+        updateReviewList() {
+            this.setReviewList();
         }
     }
 }

@@ -1,32 +1,47 @@
 <template>
-    <div class="review-container">
-        <button class="review-close-button" @click="close">
-            <font-awesome-icon :icon="['fas', 'x']" />
-        </button>
-
-        <div class="review-header">
-            <div class="review-header-title">리뷰 작성</div>
-        </div>
-        
-        <div class="review-info">
-            <img :src="attraction.firstImage" alt="">
-            <div class="review-info-content">
-                <div class="review-info-attraction">
-                    <h3>{{ attraction.title }}</h3>
-                    {{ attraction.addr1 }}
+    <div>
+        <v-dialog
+            v-model="dialog"
+            max-width="600px"
+        >
+            <template v-slot:activator="{ attrs }">
+                <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal" v-bind="attrs">
+                    <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+            </template>
+            <div v-if="this.dialog" class="content">
+                <div class="review-header">
+                    <div class="review-header-title">리뷰 작성 <font-awesome-icon class="review-icon" :icon="['far', 'message']" /></div>
                 </div>
-                <div class="review-info-plan mt-3">
-                    {{ plan.startDate | dateFormat }}
+                
+                <div class="review-info">
+                    <img :src="attraction.firstImage" alt="">
+                    <div class="review-info-content">
+                        <div class="review-info-attraction">
+                            <h3>{{ attraction.title }}</h3>
+                            {{ attraction.addr1 }}
+                        </div>
+                        <div class="review-info-plan mt-3">
+                            {{ plan.startDate | dateFormat }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-5 ml-10 mr-10">
+                    <v-textarea
+                        ref="reviewTextArea"
+                        solo
+                        v-model="content" 
+                        no-resize
+                        placeholder="리뷰를 작성해주세요." />
+                </div>
+
+                <div class="button-box">
+                    <v-btn color="green darken-1" text @click="registerReview">등록</v-btn>
+                    <v-btn color="red darken-1 " text @click="closeWriteReviewModal">닫기</v-btn>
                 </div>
             </div>
-        </div>
-
-        <div class="form-group">
-            <input type="text" v-model="subject" class="form-control mb-1" id="subject" placeholder="제목" required/>
-            <textarea class="form-control" id="content" rows="4" v-model="content" placeholder="내용" required></textarea>
-        </div>
-
-        <button class="add-review-button" @click="registerReview">리뷰 등록</button>
+        </v-dialog>
     </div>
 </template>
 
@@ -39,72 +54,81 @@ import { mapState } from "vuex";
 const userStore = "userStore";
 
 export default {
-    name: "ModalReviewWrite",
-    props: {
-        contentId: Number,
-        planId: Number,
-    },
+    name: "ReviewWriteModal",
     data() {
         return {
+            dialog: false,
             attraction: {},
             plan: {},
-            subject: '',
-            content: '',
+            content: ''
         }
+    },
+    props: {
+        planId: Number,
+        contentId : Number,
     },
     computed: {
         ...mapState(userStore, ["userInfo"]),
     },
-    created() {
-        getAttractionDetail(
-            this.contentId, 
-            ({ data }) => {
-                this.attraction = data;
-            },
-            (error) => console.log(error)
-            );
-        
-        getPlanDetail(
-            this.planId, 
-            ({ data }) => {
-                this.plan = data;
-            },
-            (error) => console.log(error)
-            );
-    },
     methods: {
-        registerReview() {
-            const review = { contentId: this.attraction.contentId, planId:this.planId, subject: this.subject, content: this.content, userId: this.userInfo.id };
-            
-            addReview(review);
+        showWriteReviewModal() {
+            this.dialog = !this.dialog;
 
-            this.close();
+            if (this.dialog) {
+                getAttractionDetail(
+                    this.contentId, 
+                    ({ data }) => {
+                        this.attraction = data;
+                    },
+                    (error) => console.log(error)
+                    );
+                
+                getPlanDetail(
+                    this.planId, 
+                    ({ data }) => {
+                        this.plan = data;
+                    },
+                    (error) => console.log(error)
+                    );
+            }
         },
-        close() {
-            this.$emit("closeWriteReviewModal");
+        closeWriteReviewModal() {
+            this.content = '';
+            this.dialog = false;
+        },
+        registerReview() {
+            if (this.content == '' || this.content == null || this.content == undefined) {
+                this.$refs["reviewTextArea"].focus();
+
+                return;
+            }
+
+            const review = { contentId: this.attraction.contentId, planId:this.planId, subject: "review", content: this.content, userId: this.userInfo.id };
+
+            addReview(
+                review,
+                () => {
+                    this.closeWriteReviewModal();
+                });
         }
     },
     filters: {
         dateFormat(value) {
-            return value.substring(0,4) + "년" + value.substring(5,7) + "월" + value.substring(8,10) + "일";
+            return value.substring(0,4) + "년 " + value.substring(5,7) + "월 " + value.substring(8,10) + "일";
         }
     }
 }
 </script>
 
 <style scoped>
-.review-container {
-  width: 568px;
-  height: 500px;
-  position: fixed;
-  background-color: #ffffff;
-  z-index: 100;
+.content {
+    background-color: white;
+    border-radius: 20px;
+}
 
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.15);
+.review-icon {
+    height: 20px;
+    width: 20px;
 }
 
 .review-header {
@@ -118,39 +142,6 @@ export default {
   border-bottom: 1px solid #ebebeb;
 }
 
-.review-close-button {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  appearance: none;
-  border: 0;
-  background-color: transparent;
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-}
-
-.review-close-button::before {
-  display: block;
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  content: "";
-  left: 50%;
-  top: 50%;
-  cursor: pointer;
-  transform: translate(-50%, -50%);
-}
-
-.review-close-button:hover::before {
-  background-color: #f7f7f7;
-  border: none;
-  border-radius: 50%;
-  z-index: -1;
-  cursor: pointer;
-}
-
 .review-info {
     margin: 20px 20px 10px 20px;
     display: flex;
@@ -162,10 +153,7 @@ export default {
     width: 190px;
     aspect-ratio: 1/1;
     border-radius: 40px;
-}
-
-.form-group {
-    margin: 10px;
+    margin-left: 25px;
 }
 
 .review-info-content {
@@ -190,18 +178,12 @@ export default {
     justify-content: center;
 }
 
-.add-review-button {
+.button-box {
   width: 100%;
-  color: #ffffff;
-  border: 0;
-  border-radius: 8px;
-  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
-
-  cursor: pointer;
-
-  padding-top: 14px;
-  padding-bottom: 14px;
-  padding-left: 24px;
-  padding-right: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  height: fit-content;
+  padding: 0px 36px 24px 36px;
 }
 </style>

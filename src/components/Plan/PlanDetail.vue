@@ -43,9 +43,7 @@
                       {{ item.attraction.title }}
                     </v-alert>
 
-                    <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal(item.contentId)">
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
+                    <review-write-modal :planId="item.planId" :contentId="item.contentId"></review-write-modal>
                     <v-btn
                       v-if="isModifying"
                       class="mx-2 d-inline"
@@ -85,9 +83,6 @@
                       {{ item.attraction.title }}
                     </v-alert>
 
-                    <v-btn class="ma-2" outlined large fab color="indigo" @click="showWriteReviewModal(item.contentId)">
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
                     <v-btn
                       v-if="isModifying"
                       class="mx-2 d-inline"
@@ -105,7 +100,6 @@
         </v-timeline>
       </v-card-text>
     </v-row>
-    <review-write-modal v-if="openWriteReviewModal" :planId="plan.id" :contentId="contentId" @closeWriteReviewModal="closeWriteReviewModal"></review-write-modal>
   </div>
 </template>
 

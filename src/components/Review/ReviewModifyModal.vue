@@ -1,32 +1,52 @@
 <template>
-    <div class="review-container">
-        <button class="review-close-button" @click="close">
-            <font-awesome-icon :icon="['fas', 'x']" />
-        </button>
-
-        <div class="review-header">
-            <div class="review-header-title">리뷰 수정</div>
-        </div>
-        
-        <div class="review-info">
-            <img :src="attraction.firstImage" alt="">
-            <div class="review-info-content">
-                <div class="review-info-attraction">
-                    <h3>{{ attraction.title }}</h3>
-                    {{ attraction.addr1 }}
+    <div>
+        <v-dialog
+            v-model="dialog"
+            max-width="600px"
+        >
+            <template v-slot:activator="{ attrs }">
+                <div>
+                    <span class="modifyBtn" type="button" @click="showModifyReviewModal" v-bind="attrs">
+                        <font-awesome-icon :icon="['fas', 'pencil']"/>
+                    </span>
                 </div>
-                <div class="review-info-plan mt-3">
-                    {{ plan.startDate | dateFormat }}
+            </template>
+            <div v-if="this.dialog" class="content"> 
+                <div class="review-header">
+                    <div class="review-header-title">리뷰 수정</div>
+                </div>
+                
+                <div class="review-info">
+                    <img :src="attraction.firstImage" alt="">
+                    <div class="review-info-content">
+                        <div class="review-info-attraction">
+                            <h3>{{ attraction.title }}</h3>
+                            {{ attraction.addr1 }}
+                        </div>
+                        <div class="review-info-plan mt-3">
+                            {{ plan.startDate | dateFormat }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-5 ml-10 mr-10">
+                    <v-textarea
+                        counter
+                        ref="reviewTextArea"
+                        background-color="grey lighten-3"
+                        v-model="content" 
+                        no-resize
+                        rounded
+                        />
+                </div>
+
+                <div class="button-box">
+                    <v-btn color="green darken-1" text @click="updateReview">수정</v-btn>
+                    <v-btn color="red darken-1 " text @click="closeModifyReviewModal">닫기</v-btn>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <input type="text" v-model="subject" class="form-control mb-1" id="subject" v-text="review.subject" required/>
-            <textarea class="form-control" id="content" rows="4" v-model="content" v-text="review.content" required></textarea>
-        </div>
-
-        <button class="add-review-button" @click="registerReview">리뷰 등록</button>
+        </v-dialog>
     </div>
 </template>
 
@@ -34,70 +54,92 @@
 import { getAttractionDetail } from "@/api/attraction.js";
 import { getPlanDetail } from "@/api/plan.js";
 import { modifyReview } from "@/api/review.js";
+import { mapState } from "vuex";
+
+const userStore = "userStore";
 
 export default {
-    name: "ReviewModifyModal",
+    name: "ReviewModfiyModal",
     props: {
         review: {},
     },
     data() {
         return {
+            dialog: false,
             attraction: {},
             plan: {},
-            subject: '',
             content: '',
         }
     },
-    created() {
-        getAttractionDetail(
-            this.review.contentId, 
-            ({ data }) => {
-                this.attraction = data;
-            },
-            (error) => console.log(error)
-            );
-        
-        getPlanDetail(
-            this.review.planId, 
-            ({ data }) => {
-                this.plan = data;
-            },
-            (error) => console.log(error)
-            );
+    computed: {
+        ...mapState(userStore, ["userInfo"]),
     },
     methods: {
-        registerReview() {
-            const review = { contentId: this.review.contentId, planId: this.review.planOd, subject: this.subject, content: this.content, userId: this.userInfo.id };
+        showModifyReviewModal() {
+            this.dialog = !this.dialog;
             
-            modifyReview(review);
+            if (this.dialog && this.review != null) {
+                getAttractionDetail(
+                this.review.contentId, 
+                ({ data }) => {
+                    this.attraction = data;
+                },
+                (error) => console.log(error)
+                );
+            
+            getPlanDetail(
+                this.review.planId, 
+                ({ data }) => {
+                    this.plan = data;
+                },
+                (error) => console.log(error)
+                );
+            }
 
-            this.close();
+            this.content = this.review.content;
         },
-        close() {
-            this.$emit("closeWriteReviewModal");
+        closeModifyReviewModal() {
+            this.content = this.review.content;
+            this.dialog = false;
+        },
+        updateReview() {
+            if (this.content == '' || this.content == null || this.content == undefined) {
+                this.$refs["reviewTextArea"].focus();
+
+                return;
+            }
+
+            const review = { articleNo: this.review.articleNo, contentId: this.review.contentId, planId: this.review.planId, subject: this.review.subject, content: this.content, userId: this.review.id };
+            
+            modifyReview(
+                review,
+                () => {
+                    this.closeModifyReviewModal();
+                    this.$emit("modifyReview");
+                }
+            )
         }
     },
     filters: {
         dateFormat(value) {
-            return value.substring(0,4) + "년" + value.substring(5,7) + "월" + value.substring(8,10) + "일";
+            if (value == null || value == '' || value == undefined) {
+                return;
+            }
+
+            return value.substring(0,4) + "년 " + value.substring(5,7) + "월 " + value.substring(8,10) + "일";
         }
     }
 }
 </script>
 
 <style scoped>
-.review-container {
-  width: 568px;
-  height: 500px;
-  position: fixed;
-  background-color: #ffffff;
-  z-index: 100;
+.content {
+    background-color: white;
+    border-radius: 20px;
+}
 
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.15);
+.modifyBtn {
+    color: #3f42db;
 }
 
 .review-header {
@@ -109,39 +151,6 @@ export default {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #ebebeb;
-}
-
-.review-close-button {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  appearance: none;
-  border: 0;
-  background-color: transparent;
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-}
-
-.review-close-button::before {
-  display: block;
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  content: "";
-  left: 50%;
-  top: 50%;
-  cursor: pointer;
-  transform: translate(-50%, -50%);
-}
-
-.review-close-button:hover::before {
-  background-color: #f7f7f7;
-  border: none;
-  border-radius: 50%;
-  z-index: -1;
-  cursor: pointer;
 }
 
 .review-info {
@@ -183,18 +192,12 @@ export default {
     justify-content: center;
 }
 
-.add-review-button {
+.button-box {
   width: 100%;
-  color: #ffffff;
-  border: 0;
-  border-radius: 8px;
-  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
-
-  cursor: pointer;
-
-  padding-top: 14px;
-  padding-bottom: 14px;
-  padding-left: 24px;
-  padding-right: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  height: fit-content;
+  padding: 0px 36px 24px 36px;
 }
 </style>
