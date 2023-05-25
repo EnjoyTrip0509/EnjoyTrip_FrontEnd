@@ -18,10 +18,14 @@ const userStore = {
         }
     },
     actions: {
-        async loginUser({ commit }, user) {
+        async loginUser({ commit }, { user, successCallback, failCallback }) {
             await login(
                 user,
                 ({ data }) => {
+                    if (data.message === 'fail') {
+                        failCallback()
+                        return;
+                    }
                     const accessToken = data["access-token"];
                     const refreshToken = data["refresh-token"];
 
@@ -29,6 +33,8 @@ const userStore = {
 
                     sessionStorage.setItem("access-token", accessToken);
                     sessionStorage.setItem("refresh-token", refreshToken);
+
+                    successCallback();
                 },
                 (error) => {
                     alert(error);

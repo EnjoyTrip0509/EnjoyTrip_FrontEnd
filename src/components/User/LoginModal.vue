@@ -23,6 +23,8 @@
           v-model="user.password"
         ></v-text-field>
 
+        <div v-if="message" class="message-section">{{ message }}</div>
+
         <div class="button-box">
           <v-btn color="green darken-1" text @click="onLogin">로그인</v-btn>
         </div>
@@ -49,6 +51,7 @@ export default {
         password: "",
       },
       dialog: false,
+      message: "",
     };
   },
   created() {
@@ -57,8 +60,15 @@ export default {
   methods: {
     ...mapActions(userStore, ["loginUser"]),
     onLogin() {
-      this.loginUser(this.user);
-      EventBus.$emit("closeDialog");
+      this.loginUser({
+        user: this.user,
+        successCallback: () => {
+          EventBus.$emit("closeDialog");
+        },
+        failCallback: () => {
+          this.message = "아이디와 비밀번호를 확인해주세요";
+        },
+      });
     },
     close() {
       //   EventBus.$emit("closeLoginModal");
@@ -85,5 +95,9 @@ export default {
   justify-content: flex-end;
   gap: 10px;
   height: fit-content;
+}
+
+.message-section {
+  color: red;
 }
 </style>
