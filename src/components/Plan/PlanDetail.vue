@@ -140,10 +140,12 @@
       </v-card-text>
     </v-row>
 
-    <div v-if="!dayLocations.length" class="plan-info-section">
-      <div class="plan-info-container" @click="onClickSearch">
-        <span class="plan-info-title">방문할 장소를 추가해주세요!</span>
-        <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+    <div>
+      <div v-if="!dayLocations.length" class="plan-info-section">
+        <div class="plan-info-container" @click="onClickSearch">
+          <span class="plan-info-title">방문할 장소를 추가해주세요!</span>
+          <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+        </div>
       </div>
     </div>
   </div>
@@ -202,7 +204,10 @@ export default {
   },
   updated() {
     this.$nextTick(function () {
+      console.log("testsetset", this.dayLocations);
       if (this.dayLocations.length) {
+        console.log("wokred");
+
         if (!window.kakao || !window.kakao.maps) {
           const script = document.createElement("script");
           script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
@@ -271,6 +276,7 @@ export default {
       const planId = this.$route.params.planId;
 
       getPlanDayDetail(planId, idx, ({ data }) => {
+        console.log(data, "datatata");
         this.dayLocations = data;
       });
     },
@@ -346,7 +352,6 @@ export default {
       this.map.setBounds(bounds);
       this.polyline.setMap(this.map);
 
-      console.log("before", this.polyline);
       this.markers = temp;
     },
     onClickDeleteLocation(id) {
@@ -507,11 +512,12 @@ export default {
   align-items: center;
 }
 
-.plan-info-section svg {
+.plan-info-container svg {
   font-size: 40px;
   margin-left: 10px;
   color: #d7d7d7;
 }
+
 .plan-info-title {
   font-size: 50px;
   color: #d7d7d7;
