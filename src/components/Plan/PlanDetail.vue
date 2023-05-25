@@ -141,10 +141,10 @@
     </v-row>
 
     <div class="plan-info-section">
-      <router-link to="/search">
+      <div class="plan-info-container" @click="onClickSearch">
         <span class="plan-info-title">방문할 장소를 추가해주세요!</span>
         <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
-      </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -161,6 +161,9 @@ import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
 import draggable from "vuedraggable";
 import _ from "lodash";
 import contentColor from "@/constant/contentColor";
+import { mapMutations } from "vuex";
+
+const searchStore = "searchStore";
 
 export default {
   name: "PlanDetail",
@@ -215,6 +218,14 @@ export default {
     });
   },
   methods: {
+    ...mapMutations(searchStore, ["SET_SIDO", "SET_GUGUN", "SET_CONTENT"]),
+    onClickSearch() {
+      this.SET_SIDO({ sidoCode: 0, sidoName: "전국" });
+      this.SET_GUGUN({ gugunCode: "", gugunName: "" });
+      this.SET_CONTENT({ contentCode: 12, contentName: "관광지" });
+
+      this.$router.push({ name: "search" });
+    },
     calcDay() {
       let startDateArr = this.plan.startDate.split("-");
       let endDateArr = this.plan.endDate.split("-");
@@ -482,6 +493,10 @@ export default {
 }
 
 .attraction-title {
+  cursor: pointer;
+}
+
+.plan-info-container {
   cursor: pointer;
 }
 
