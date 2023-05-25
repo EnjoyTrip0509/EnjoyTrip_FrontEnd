@@ -36,3 +36,6 @@ export async function getUserInfo(userId, success, fail) {
     await api.get(`/user/info/${userId}`).then(success).catch(fail);
 }
 
+export async function checkId(userId, success, fail) {
+    await api.get(`/user/checkId/${userId}`).then(success).catch(fail);
+}
