@@ -140,14 +140,12 @@
       </v-card-text>
     </v-row>
 
-    <v-card-text
-      v-if="!dayLocations.length"
-      class="py-0 pl-0 d-flex justify-center"
-    >
+    <div class="plan-info-section">
       <router-link to="/search">
-        해당 일자에 방문할 장소를 추가해주세요!
+        <span class="plan-info-title">방문할 장소를 추가해주세요!</span>
+        <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
       </router-link>
-    </v-card-text>
+    </div>
   </div>
 </template>
 
@@ -485,5 +483,28 @@ export default {
 
 .attraction-title {
   cursor: pointer;
+}
+
+.plan-info-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+  align-items: center;
+}
+
+.plan-info-section svg {
+  font-size: 40px;
+  margin-left: 10px;
+  color: #d7d7d7;
+}
+.plan-info-title {
+  font-size: 50px;
+  color: #d7d7d7;
+  text-decoration-line: none;
+  font-family: "KBO-Dia-Gothic_bold";
+}
+
+.plan-info-section a {
+  text-decoration-line: none;
 }
 </style>
