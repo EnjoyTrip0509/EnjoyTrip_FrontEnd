@@ -42,7 +42,6 @@ export default {
 
     getAttractionDetail(contentId, ({ data }) => {
       this.attraction = data;
-      console.log(this.attraction);
     },
     (error) => console.log(error)
     )

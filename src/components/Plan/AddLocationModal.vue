@@ -1,27 +1,27 @@
 <template>
-    <div class="container">
-        <button class="close-button" @click="close">
-            <font-awesome-icon :icon="['fas', 'x']" />
-        </button>
+  <div class="container">
+    <button class="close-button" @click="close">
+      <font-awesome-icon :icon="['fas', 'x']" />
+    </button>
 
-        <div class="header">
-            <div class="header-title">여행 목록</div>
-        </div>
-
-        <button class="add-plan-button" @click="showAddPlanModal">
-            <div class="add-plan-button-content fw-bold">+ 여행 등록</div>
-        </button>
-
-        <div>
-            <modal-plan-list></modal-plan-list>
-        </div>
-
-        <button class="add-button" @click="addLocationToPlan">장소 추가</button>
+    <div class="header">
+      <div class="header-title">여행 목록</div>
     </div>
+
+    <button class="add-plan-button" @click="showAddPlanModal">
+      <div class="add-plan-button-content fw-bold">+ 여행 등록</div>
+    </button>
+
+    <div>
+      <modal-plan-list></modal-plan-list>
+    </div>
+
+    <button class="add-button" @click="addLocationToPlan">장소 추가</button>
+  </div>
 </template>
 
 <script>
-import ModalPlanList from '@/components/Plan/ModalPlanList.vue'
+import ModalPlanList from "@/components/Plan/ModalPlanList.vue";
 import { addLocation } from "@/api/plan";
 import { mapState, mapActions } from "vuex";
 
@@ -29,40 +29,42 @@ const userStore = "userStore";
 const planStore = "planStore";
 
 export default {
-    name: "AddLocationModal",
-    components: {
-        ModalPlanList,
-    },
-    props: {
-        contentId: Number,
-    },
-    created() {
-        this.selectPlan(0);
-        this.selectDay(0);
-    },
-    computed: {
-        ...mapState(userStore, ["userInfo"]),
-        ...mapState(planStore, ["planId", "day"]),
-    },
-    methods: {
-        ...mapActions(planStore, ["selectPlan", "selectDay"]),
-        addLocationToPlan() {
-            let location = { contentId: this.contentId, planId: this.planId, day: this.day};
+  name: "AddLocationModal",
+  components: {
+    ModalPlanList,
+  },
+  props: {
+    contentId: Number,
+  },
+  created() {
+    this.selectPlan(0);
+    this.selectDay(0);
+  },
+  computed: {
+    ...mapState(userStore, ["userInfo"]),
+    ...mapState(planStore, ["planId", "day"]),
+  },
+  methods: {
+    ...mapActions(planStore, ["selectPlan", "selectDay"]),
+    addLocationToPlan() {
+      let location = {
+        contentId: this.contentId,
+        planId: this.planId,
+        day: this.day,
+      };
 
-            console.log(location);
+      addLocation(location);
 
-            addLocation(location);
-
-            this.close();
-        },
-        close() {
-            this.$emit('closeAddLocationModal');
-        },
-        showAddPlanModal() {
-            this.$emit('showAddPlanModal');
-        }
-    }
-}
+      this.close();
+    },
+    close() {
+      this.$emit("closeAddLocationModal");
+    },
+    showAddPlanModal() {
+      this.$emit("showAddPlanModal");
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -151,6 +153,6 @@ export default {
 }
 
 .add-plan-button-content {
-    margin: 7px 10px 7px 10px;
+  margin: 7px 10px 7px 10px;
 }
 </style>

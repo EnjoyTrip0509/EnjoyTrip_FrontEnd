@@ -11,7 +11,7 @@
 
 <script>
 import HotPlaceCard from "@/components/HotPlace/HotPlaceCard.vue";
-import { getHotPlace } from "@/api/attraction"
+import { getHotPlace } from "@/api/attraction";
 
 export default {
   name: "HotPlaceSection",
@@ -25,9 +25,8 @@ export default {
   },
   created() {
     getHotPlace(
-      ({data}) => {
+      ({ data }) => {
         this.hotPlaces = data;
-        console.log(data);
       },
       (error) => {
         console.log(error);
@@ -55,6 +54,5 @@ export default {
 .hotplace-title {
   font-family: "KBO-Dia-Gothic_bold";
   font-size: 45px;
-
 }
 </style>

@@ -9,7 +9,6 @@
         <router-link to="/">
           <img :src="require(`@/assets/planet-earth.png`)" />
         </router-link>
-
       </div>
       <div class="user-button-container" v-if="this.isLogin">
         <button class="user-menu" @click.stop="onClickProfile">
@@ -40,7 +39,7 @@
             <profile-menu-item
               title="내 리뷰"
               event="moveReviewList"
-            ></profile-menu-item>            
+            ></profile-menu-item>
           </div>
         </button>
       </div>
@@ -150,14 +149,14 @@ export default {
       this.showModal = false;
       document.removeEventListener("click", this.documentClick);
 
-      if (this.$route.path != '/plan' && this.$route.path != '/plan/list') {
-        this.$router.push('/plan');
+      if (this.$route.path != "/plan" && this.$route.path != "/plan/list") {
+        this.$router.push("/plan");
       }
     },
     moveReviewList() {
       this.showModal = false;
-      if (this.$route.path != '/review') {
-        this.$router.push('/review');
+      if (this.$route.path != "/review") {
+        this.$router.push("/review");
       }
     },
     documentClick(e) {
@@ -167,8 +166,6 @@ export default {
       if (!el) {
         return;
       }
-
-      console.log(el.contains(target), el, target);
 
       if (el !== target && !el.contains(target)) {
         this.showModal = false;

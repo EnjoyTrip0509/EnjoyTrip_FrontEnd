@@ -35,7 +35,6 @@ export default {
       EventBus.$emit("modifyMyInfo");
     },
     moveNext() {
-      //   console.log(this.userInfo, this.password);
       checkPassword(
         { ...this.userInfo, password: this.password },
         () => {
