@@ -16,7 +16,7 @@
       <modal-plan-list></modal-plan-list>
     </div>
 
-    <button class="add-button" @click="addLocationToPlan">장소 추가</button>
+    <button class="add-button" @click="addLocationToPlan">일정 추가</button>
   </div>
 </template>
 

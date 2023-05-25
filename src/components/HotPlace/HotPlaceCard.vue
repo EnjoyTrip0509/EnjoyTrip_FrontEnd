@@ -14,7 +14,9 @@
 
     <v-img height="250" :src="attraction.firstImage"></v-img>
 
-    <v-card-title>{{ attraction.title | attractionTitleSlice }}</v-card-title>
+    <v-card-title class="font-weight-black">{{
+      attraction.title | attractionTitleSlice
+    }}</v-card-title>
 
     <v-card-text>
       <p>{{ attraction.addr1 }}</p>
