@@ -205,10 +205,7 @@ export default {
   },
   updated() {
     this.$nextTick(function () {
-      console.log("testsetset", this.dayLocations);
       if (this.dayLocations.length) {
-        console.log("wokred");
-
         if (!window.kakao || !window.kakao.maps) {
           const script = document.createElement("script");
           script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
@@ -254,8 +251,6 @@ export default {
           _.cloneDeep(location)
         );
       } else {
-        // console.log(this.plan, this.modifiedLocations);
-
         updatePlan(
           {
             ...this.plan,
@@ -277,7 +272,6 @@ export default {
       const planId = this.$route.params.planId;
 
       getPlanDayDetail(planId, idx, ({ data }) => {
-        console.log(data, "datatata");
         this.dayLocations = data;
       });
     },

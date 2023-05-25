@@ -26,6 +26,8 @@
 
         <v-text-field label="이메일" v-model="user.email"></v-text-field>
 
+        <div v-if="message" class="message-section">{{ message }}</div>
+
         <div class="button-box">
           <v-btn color="green darken-1" text @click="onRegister"
             >회원가입</v-btn
@@ -54,8 +56,9 @@ export default {
         id: "",
         password: "",
         name: "",
-        emil: "",
+        email: "",
       },
+      message: "",
       dialog: false,
     };
   },
@@ -65,6 +68,26 @@ export default {
   methods: {
     ...mapActions(userStore, ["loginUser"]),
     onRegister() {
+      if (this.user.id === "") {
+        this.message = "아이디를 입력해주세요.";
+        return;
+      }
+
+      if (this.user.password === "") {
+        this.message = "비밀번호를 입력해주세요.";
+        return;
+      }
+
+      if (this.user.name === "") {
+        this.message = "이름을 입력해주세요.";
+        return;
+      }
+
+      if (this.user.email === "") {
+        this.message = "이메일을 입력해주세요.";
+        return;
+      }
+
       register(
         this.user,
         () => {
@@ -101,5 +124,9 @@ export default {
   justify-content: flex-end;
   gap: 10px;
   height: fit-content;
+}
+
+.message-section {
+  color: red;
 }
 </style>

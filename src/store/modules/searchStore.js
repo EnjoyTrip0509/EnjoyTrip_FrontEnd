@@ -20,7 +20,6 @@ const searchStore = {
     },
     getters: {
         positions: (state) => {
-            console.log(state.searchResults);
             return state.searchResults.map(({ title, latitude, longitude, contentTypeId }) => ({ title, latitude, longitude, contentTypeId }));
         }
     },
@@ -70,7 +69,6 @@ const searchStore = {
                     pageNo: pageIndex,
                 },
                 ({ data }) => {
-                    console.log(data);
                     commit("SET_RESULT", data.attractions);
                     callback();
                 },

@@ -25,7 +25,6 @@ export default {
         findReviewsByContentId(
             this.contentId,
             ({ data }) => {
-                console.log(data);
                 this.reviews = data;
             }
         );
