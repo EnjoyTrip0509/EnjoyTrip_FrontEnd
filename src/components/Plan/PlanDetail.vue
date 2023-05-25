@@ -44,21 +44,21 @@
       <v-btn @click="modify">{{isModifying ? '적용' : '편집'}}</v-btn>
     </v-sheet>
 
-    <v-row v-if="!isModifying" class="d-flex justify-center" max-width="800">
+    <v-row v-if="!isModifying && dayLocations.length" class="d-flex justify-center" max-width="800">
       <div id="map"></div>
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
         <v-timeline dense class="w-100">
                 <v-timeline-item
                   v-for="item in dayLocations"
                   :key="item.id"
-                  color="blue"
+                  :color="contentColor[item.attraction.contentTypeId]"
                   small
                   fill-dot
                 >
                   <div class="d-flex align-center">
                     <v-alert
                       :value="true"
-                      color="blue"
+                      :color="contentColor[item.attraction.contentTypeId]"
                       class="white--text mx-1 mt-3 w-100"
                     >
                       <div class="attraction-title" @click="moveAttractionDetail(item.attraction.contentId)">
@@ -73,7 +73,7 @@
       </v-card-text>
     </v-row>
 
-    <v-row v-else class="d-flex justify-center">
+    <v-row v-if="isModifying && dayLocations.length" class="d-flex justify-center">
       <div id="map"></div>
 
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
@@ -82,14 +82,14 @@
                 <v-timeline-item
                   v-for="item in modifiedLocations"
                   :key="item.id"
-                  color="blue"
+                  :color="contentColor[item.attraction.contentTypeId]"
                   small
                   fill-dot
                 >
                   <div class="d-flex align-center">
                     <v-alert
                       :value="true"
-                      color="blue"
+                      :color="contentColor[item.attraction.contentTypeId]"
                       class="white--text mx-1 mt-3 w-100"
                     >
                       <div class="attraction-title" @click="moveAttractionDetail(item.attraction.contentId)">
@@ -114,6 +114,14 @@
         </v-timeline>
       </v-card-text>
     </v-row>
+
+
+    <v-card-text v-if="!dayLocations.length" class="py-0 pl-0 d-flex justify-center">
+      <router-link to="/search">
+        해당 일자에 방문할 장소를 추가해주세요!
+      </router-link>
+    </v-card-text>
+
   </div>
 </template>
 
@@ -122,6 +130,7 @@ import { getPlanDayDetail, getPlanDetail, deleteLocation, updatePlan, deletePlan
 import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
 import draggable from 'vuedraggable'
 import _ from 'lodash';
+import contentColor from "@/constant/contentColor";
 
 export default {
   name: "PlanDetail",
@@ -141,7 +150,38 @@ export default {
       openWriteReviewModal: false,
       contentId:'',
       drag: false,
+      contentColor,
     };
+  },
+
+  created() {
+    const planId = this.$route.params.planId;
+
+    getPlanDetail(planId, ({ data }) => {
+      this.plan = data;
+      this.calcDay();
+    });
+
+    getPlanDayDetail(planId, 1, ({ data }) => {
+      this.dayLocations = data;
+    });
+  },  
+  updated() {
+    this.$nextTick(function() {
+      if (this.dayLocations.length) {
+          if (!window.kakao || !window.kakao.maps) {
+            const script = document.createElement("script");
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
+            script.addEventListener("load", () => {
+              kakao.maps.load(this.initMap);
+            });
+
+          document.head.appendChild(script);
+        } else {
+          this.initMap();
+        }
+      }
+    });
   },
   methods: {
     calcDay() {
@@ -183,7 +223,6 @@ export default {
 
       getPlanDayDetail(planId, idx, ({ data }) => {
         this.dayLocations = data;
-        this.displayMarkers();
       });
     },
     initMap() {
@@ -194,17 +233,7 @@ export default {
       };
       this.map = new kakao.maps.Map(container, options);
 
-      const planId = this.$route.params.planId;
-
-      getPlanDetail(planId, ({ data }) => {
-        this.plan = data;
-        this.calcDay();
-      });
-
-      getPlanDayDetail(planId, 1, ({ data }) => {
-        this.dayLocations = data;
-        this.displayMarkers();
-      });
+      this.displayMarkers();
     },
 
     displayMarkers() {
@@ -288,17 +317,7 @@ export default {
     }
   },
   mounted() {
-    if (!window.kakao || !window.kakao.maps) {
-      const script = document.createElement("script");
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
-      script.addEventListener("load", () => {
-        kakao.maps.load(this.initMap);
-      });
 
-      document.head.appendChild(script);
-    } else {
-      this.initMap();
-    }
   },
   filters: {
     dateFormat(value) {
