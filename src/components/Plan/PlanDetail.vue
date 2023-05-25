@@ -164,6 +164,7 @@ import draggable from "vuedraggable";
 import _ from "lodash";
 import contentColor from "@/constant/contentColor";
 import { mapMutations } from "vuex";
+import contentMarker from "@/constant/contentMarker";
 
 const searchStore = "searchStore";
 
@@ -304,18 +305,23 @@ export default {
 
       const temp = [];
 
-      const imgSrc =
-        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-      const imageSize = new kakao.maps.Size(24, 35);
-      const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
+      // const imgSrc =
+      //   "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
       this.dayLocations
-        .map(({ attraction: { title, latitude, longitude } }) => ({
-          title,
-          latitude,
-          longitude,
-        }))
-        .forEach(({ title, latitude, longitude }) => {
+        .map(
+          ({ attraction: { title, latitude, longitude, contentTypeId } }) => ({
+            title,
+            latitude,
+            longitude,
+            contentTypeId,
+          })
+        )
+        .forEach(({ title, latitude, longitude, contentTypeId }) => {
+          const imgSrc = require(`@/assets/marker/${contentMarker[contentTypeId]}`);
+          const imageSize = new kakao.maps.Size(40, 40);
+          const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
+
           const marker = new kakao.maps.Marker({
             map: this.map,
             position: new kakao.maps.LatLng(latitude, longitude),
