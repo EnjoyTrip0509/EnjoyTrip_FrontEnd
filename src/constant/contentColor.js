@@ -1,12 +1,11 @@
 const contentsColor = {
-  12: 'red lighten-2',
+  12: 'red lighten-3',
   14: 'purple lighten-2',
   15: 'green lighten-1',
-  25: 'indigo lighten-2',
+  25: "pink lighten-2",
   28: "amber lighten-1",
-  32: "cyan lighten-1",
-  38: "pink",
-  39: "orange",
+  32: "cyan lighten-2",
+  38: 'indigo lighten-2',
+  39: "orange lighten-2",
 };
-
 export default contentsColor;

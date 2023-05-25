@@ -140,14 +140,14 @@
       </v-card-text>
     </v-row>
 
-    <v-card-text
-      v-if="!dayLocations.length"
-      class="py-0 pl-0 d-flex justify-center"
-    >
-      <router-link to="/search">
-        해당 일자에 방문할 장소를 추가해주세요!
-      </router-link>
-    </v-card-text>
+    <div>
+      <div v-if="!dayLocations.length" class="plan-info-section">
+        <div class="plan-info-container" @click="onClickSearch">
+          <span class="plan-info-title">방문할 장소를 추가해주세요!</span>
+          <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -163,6 +163,9 @@ import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
 import draggable from "vuedraggable";
 import _ from "lodash";
 import contentColor from "@/constant/contentColor";
+import { mapMutations } from "vuex";
+
+const searchStore = "searchStore";
 
 export default {
   name: "PlanDetail",
@@ -201,7 +204,10 @@ export default {
   },
   updated() {
     this.$nextTick(function () {
+      console.log("testsetset", this.dayLocations);
       if (this.dayLocations.length) {
+        console.log("wokred");
+
         if (!window.kakao || !window.kakao.maps) {
           const script = document.createElement("script");
           script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
@@ -217,6 +223,14 @@ export default {
     });
   },
   methods: {
+    ...mapMutations(searchStore, ["SET_SIDO", "SET_GUGUN", "SET_CONTENT"]),
+    onClickSearch() {
+      this.SET_SIDO({ sidoCode: 0, sidoName: "전국" });
+      this.SET_GUGUN({ gugunCode: "", gugunName: "" });
+      this.SET_CONTENT({ contentCode: 12, contentName: "관광지" });
+
+      this.$router.push({ name: "search" });
+    },
     calcDay() {
       let startDateArr = this.plan.startDate.split("-");
       let endDateArr = this.plan.endDate.split("-");
@@ -262,6 +276,7 @@ export default {
       const planId = this.$route.params.planId;
 
       getPlanDayDetail(planId, idx, ({ data }) => {
+        console.log(data, "datatata");
         this.dayLocations = data;
       });
     },
@@ -329,15 +344,14 @@ export default {
             new kakao.maps.LatLng(latitude, longitude)
         ),
         strokeWeight: 5, // 선의 두께 입니다
-        strokeColor: "#FFAE00", // 선의 색깔입니다
+        strokeColor: "#1976D2", // 선의 색깔입니다
         strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-        strokeStyle: "solid", // 선의 스타일입니다
+        strokeStyle: "shortdash", // 선의 스타일입니다
       });
 
       this.map.setBounds(bounds);
       this.polyline.setMap(this.map);
 
-      console.log("before", this.polyline);
       this.markers = temp;
     },
     onClickDeleteLocation(id) {
@@ -485,5 +499,33 @@ export default {
 
 .attraction-title {
   cursor: pointer;
+}
+
+.plan-info-container {
+  cursor: pointer;
+}
+
+.plan-info-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+  align-items: center;
+}
+
+.plan-info-container svg {
+  font-size: 40px;
+  margin-left: 10px;
+  color: #d7d7d7;
+}
+
+.plan-info-title {
+  font-size: 50px;
+  color: #d7d7d7;
+  text-decoration-line: none;
+  font-family: "KBO-Dia-Gothic_bold";
+}
+
+.plan-info-section a {
+  text-decoration-line: none;
 }
 </style>
