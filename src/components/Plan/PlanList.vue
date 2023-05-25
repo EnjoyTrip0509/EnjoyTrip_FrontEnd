@@ -1,23 +1,14 @@
 <template>
-    <b-container class="bv-example-row mt-3 text-center">
-        <b-container class="bv-example-row mt-3">
-            <b-row>
-                <b-col>
-                    <b-alert show variant="secondary"><h3 class="fw-bold">여행 목록</h3></b-alert>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col>
-                    <plan-item v-for="plan in plans" :key="plan.id" :plan="plan"></plan-item>
-                </b-col>
-            </b-row>
-        </b-container>
-    </b-container>
+    <div class="my-plan-list-content">
+        <ul>
+            <plan-item v-for="plan in plans" :key="plan.id" :plan="plan" @deletePlan="removePlan(plan.id)"></plan-item>
+        </ul>
+    </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { listPlan } from "@/api/plan";
+import { listPlan, deletePlan } from "@/api/plan";
 import PlanItem from '@/components/Plan/PlanItem.vue'
 
 const userStore = "userStore";
@@ -29,14 +20,25 @@ export default {
         PlanItem,
     },
     created() {
-        listPlan(
-            this.userInfo.id,
-            ({ data }) => {
-                this.setPlans(data);
-            });
+        this.getPlanList();
     },
     methods: {
         ...mapActions(planStore, ["setPlans"]),
+        getPlanList() {
+            listPlan(
+                this.userInfo.id,
+                ({ data }) => {
+                    this.setPlans(data);
+                });
+        },
+        removePlan(planId) {
+            deletePlan(
+                planId,
+                () => {
+                    this.getPlanList();
+                }
+            )
+        }
     },
     computed: {
         ...mapState(userStore, ["userInfo"]),
@@ -44,3 +46,19 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.my-plan-list-content {
+    display: flex;
+    justify-content : center;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0px;
+    margin-top: 0;
+    text-align: left;
+    width: 610px;
+    justify-content : center;
+}
+</style>

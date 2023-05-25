@@ -2,7 +2,7 @@
     <li class="shadow mb-7">
         <div class="review-item-header">
             <div class="attraction-info mt-5 ml-9" @click="moveAttractionDetail(attraction.contentId)">
-                <img :src="attraction.firstImage" alt="">
+                <img :src="attraction.firstImage || require(`@/assets/planet-earth.png`)" alt="관광지 이미지" />
                 <div class="attraction-info-content">
                     <h3 class="fw-bold">{{ attraction.title | attractionTitleSlice }}</h3>
                     <div>{{ attraction.addr1}}</div>
@@ -122,6 +122,7 @@ li {
 }
 
 .attraction-info {
+    cursor: pointer;
     width: 480px;
     height: 130px;
     display: flex;

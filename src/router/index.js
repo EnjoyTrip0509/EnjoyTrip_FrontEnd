@@ -6,6 +6,7 @@ import DetailView from '@/views/DetailView.vue'
 import PlanList from '@/components/Plan/PlanList.vue'
 import PlanDetail from '@/components/Plan/PlanDetail.vue'
 import ReviewView from '@/views/ReviewView.vue'
+import PlanView from '@/views/PlanView.vue'
 
 Vue.use(VueRouter)
 
@@ -26,14 +27,22 @@ const routes = [
     component: DetailView
   },
   {
-    path: '/plan/list',
-    name: 'planList',
-    component: PlanList,
-  },
-  {
-    path: '/plan/detail/:planId',
-    name: 'planDetail',
-    component: PlanDetail,
+    path: '/plan',
+    name: 'plan',
+    component: PlanView,
+    redirect: '/plan/list',
+    children: [
+      {
+        path: 'list',
+        name: 'planList',
+        component: PlanList
+      },
+      {
+        path: 'detail/:planId',
+        name: 'planDetail',
+        component: PlanDetail
+      }
+    ]
   },
   {
     path: '/review',

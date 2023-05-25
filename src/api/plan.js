@@ -17,6 +17,11 @@ export async function addPlan(Plan, success, fail) {
     await api.post(`/plan`, JSON.stringify(Plan)).then(success).catch(fail);
 }
 
+export async function deletePlan(planId, success, fail) {
+    api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
+    await api.delete(`/plan/${planId}`).then(success).catch(fail);
+}
+
 export async function getPlanDetail(planId, success, fail) {
     api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
     await api.get(`/plan/view/${planId}`).then(success).catch(fail);
