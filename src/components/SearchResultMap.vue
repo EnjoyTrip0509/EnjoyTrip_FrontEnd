@@ -5,7 +5,7 @@
 <script>
 import { mapGetters } from "vuex";
 import EventBus from "@/util/EventBus.js";
-
+import contentMarker from "@/constant/contentMarker";
 const searchStore = "searchStore";
 
 export default {
@@ -39,23 +39,24 @@ export default {
         });
       }
 
-      const imgSrc =
-        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-      const imageSize = new kakao.maps.Size(24, 35);
-      const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
-
       const temp = [];
 
-      this.positions.forEach(({ title, latitude, longitude }) => {
-        const marker = new kakao.maps.Marker({
-          map: this.map,
-          position: new kakao.maps.LatLng(latitude, longitude),
-          title: title,
-          image: markerImage,
-        });
+      this.positions.forEach(
+        ({ title, latitude, longitude, contentTypeId }) => {
+          const imgSrc = require(`@/assets/marker/${contentMarker[contentTypeId]}`);
+          const imageSize = new kakao.maps.Size(35, 35);
+          const markerImage = new kakao.maps.MarkerImage(imgSrc, imageSize);
 
-        temp.push(marker);
-      });
+          const marker = new kakao.maps.Marker({
+            map: this.map,
+            position: new kakao.maps.LatLng(latitude, longitude),
+            title: title,
+            image: markerImage,
+          });
+
+          temp.push(marker);
+        }
+      );
 
       const bounds = this.positions.reduce(
         (bound, { latitude, longitude }) =>
