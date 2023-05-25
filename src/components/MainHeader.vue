@@ -6,7 +6,10 @@
       /></router-link>
 
       <div class="center-img">
-        <img :src="require(`@/assets/planet-earth.png`)" />
+        <router-link to="/">
+          <img :src="require(`@/assets/planet-earth.png`)" />
+        </router-link>
+
       </div>
       <div class="user-button-container" v-if="this.isLogin">
         <button class="user-menu" @click.stop="onClickProfile">
@@ -147,11 +150,12 @@ export default {
       this.showModal = false;
       document.removeEventListener("click", this.documentClick);
 
-      if (this.$route.path != '/plan/list') {
-        this.$router.push('/plan/list');
+      if (this.$route.path != '/plan' && this.$route.path != '/plan/list') {
+        this.$router.push('/plan');
       }
     },
     moveReviewList() {
+      this.showModal = false;
       if (this.$route.path != '/review') {
         this.$router.push('/review');
       }
@@ -215,6 +219,7 @@ header a {
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: translateX(-4%);
 }
 
 .center-img img {

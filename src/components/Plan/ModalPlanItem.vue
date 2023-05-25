@@ -68,6 +68,11 @@ export default {
 </script>
 
 <style scoped>
+li {
+    cursor: pointer;
+    margin-right: 22px;
+}
+
 .btn {
     border-radius: 20px;
     margin-right: 5px;

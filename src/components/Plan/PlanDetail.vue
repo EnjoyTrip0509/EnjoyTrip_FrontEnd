@@ -1,16 +1,26 @@
 <template>
   <div>
-    <div class="plan-detail-header">
-      <div class="travel-info">
-        <div class="image-container">
-          <img :src="require(`@/assets/palace.jpg`)" :alt="plan.id" class="trip-image">
-        </div>
-        <div class="info-container">
-          <h1 class="title">{{ plan.title }}</h1>
-          <p class="description">{{ plan.startDate | dateFormat }} - {{ plan.endDate | dateFormat }}</p>
-          <div class="actions">
-            <button class="edit-btn">편집</button>
-            <button class="remove-btn">삭제</button>
+    <div class="plan-item-container">
+      <div class="plan-item shadow mt-4 mb-10">
+        <div class="plan-item-header">
+          <div class="plan-info mt-5 ml-9" @click="showPlanDetail(plan.id)">
+            <img :src="require(`@/assets/planet-earth.png`)" />
+            <div class="plan-info-content">
+              <h3 class="fw-bold">{{ plan.title }}</h3>
+              <div>
+                {{ plan.startDate | dateFormat }} -
+                {{ plan.endDate | dateFormat }}
+              </div>
+            </div>
+          </div>
+
+          <div class="button-box">
+            <span class="editBtn" type="button">
+              <font-awesome-icon :icon="['fas', 'pencil']" />
+            </span>
+            <span class="removeBtn" type="button" @click="removePlan">
+              <font-awesome-icon :icon="['far', 'fa-trash-alt']" />
+            </span>
           </div>
         </div>
       </div>
@@ -26,88 +36,133 @@
             depressed
             rounded
             @click="onClickDay(n)"
+            :class="{
+              'btn-secondary': dayNumber == day,
+              'btn-light': dayNumber != day,
+            }"
           >
             day {{ n }}
           </v-btn>
         </v-slide-item>
       </v-slide-group>
-      <v-btn @click="modify">{{isModifying ? '적용' : '편집'}}</v-btn>
+      <v-btn @click="modify">{{ isModifying ? "적용" : "편집" }}</v-btn>
     </v-sheet>
 
-    <v-row v-if="!isModifying" class="d-flex justify-center" max-width="800">
+    <v-row
+      v-if="!isModifying && dayLocations.length"
+      class="d-flex justify-center"
+      max-width="800"
+    >
       <div id="map"></div>
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
         <v-timeline dense class="w-100">
-                <v-timeline-item
-                  v-for="item in dayLocations"
-                  :key="item.id"
-                  color="blue"
-                  small
-                  fill-dot
+          <v-timeline-item
+            v-for="item in dayLocations"
+            :key="item.id"
+            :color="contentColor[item.attraction.contentTypeId]"
+            small
+            fill-dot
+          >
+            <div class="d-flex align-center">
+              <v-alert
+                :value="true"
+                :color="contentColor[item.attraction.contentTypeId]"
+                class="white--text mx-1 mt-3 w-100"
+              >
+                <div
+                  class="attraction-title"
+                  @click="moveAttractionDetail(item.attraction.contentId)"
                 >
-                  <div class="d-flex align-center">
-                    <v-alert
-                      :value="true"
-                      color="blue"
-                      class="white--text mx-1 mt-3 w-100"
-                    >
-                      {{ item.attraction.title }}
-                    </v-alert>
-                    
-                    <review-write-modal :planId="item.planId" :contentId="item.contentId"></review-write-modal>
-                  </div>
-                </v-timeline-item>
+                  {{ item.attraction.title }}
+                </div>
+              </v-alert>
+
+              <review-write-modal
+                :planId="item.planId"
+                :contentId="item.contentId"
+              ></review-write-modal>
+            </div>
+          </v-timeline-item>
         </v-timeline>
       </v-card-text>
     </v-row>
 
-    <v-row v-else class="d-flex justify-center">
+    <v-row
+      v-if="isModifying && dayLocations.length"
+      class="d-flex justify-center"
+    >
       <div id="map"></div>
 
       <v-card-text class="py-0 pl-0 d-flex justify-center w-50">
         <v-timeline dense class="w-100">
-              <draggable v-model="modifiedLocations" group="locations" @start="drag=true" @end="drag=false">
-                <v-timeline-item
-                  v-for="item in modifiedLocations"
-                  :key="item.id"
-                  color="blue"
-                  small
-                  fill-dot
+          <draggable
+            v-model="modifiedLocations"
+            group="locations"
+            @start="drag = true"
+            @end="drag = false"
+          >
+            <v-timeline-item
+              v-for="item in modifiedLocations"
+              :key="item.id"
+              :color="contentColor[item.attraction.contentTypeId]"
+              small
+              fill-dot
+            >
+              <div class="d-flex align-center">
+                <v-alert
+                  :value="true"
+                  :color="contentColor[item.attraction.contentTypeId]"
+                  class="white--text mx-1 mt-3 w-100"
                 >
-                  <div class="d-flex align-center">
-                    <v-alert
-                      :value="true"
-                      color="blue"
-                      class="white--text mx-1 mt-3 w-100"
-                    >
-                      {{ item.attraction.title }}
-                    </v-alert>
-
-                    <v-btn
-                      v-if="isModifying"
-                      class="mx-2 d-inline"
-                      fab
-                      dark
-                      small
-                      color="red"
-                      @click="onClickDeleteLocation(item.id)"
-                    >
-                      <v-icon dark> mdi-minus </v-icon>
-                    </v-btn>
+                  <div
+                    class="attraction-title"
+                    @click="moveAttractionDetail(item.attraction.contentId)"
+                  >
+                    {{ item.attraction.title }}
                   </div>
-                </v-timeline-item>
-              </draggable>
+                </v-alert>
+
+                <v-btn
+                  v-if="isModifying"
+                  class="mx-2 d-inline"
+                  fab
+                  dark
+                  small
+                  color="red"
+                  @click="onClickDeleteLocation(item.id)"
+                >
+                  <v-icon dark> mdi-minus </v-icon>
+                </v-btn>
+              </div>
+            </v-timeline-item>
+          </draggable>
         </v-timeline>
       </v-card-text>
     </v-row>
+
+    <v-card-text
+      v-if="!dayLocations.length"
+      class="py-0 pl-0 d-flex justify-center"
+    >
+      <router-link to="/search">
+        해당 일자에 방문할 장소를 추가해주세요!
+      </router-link>
+    </v-card-text>
   </div>
 </template>
 
 <script>
-import { getPlanDayDetail, getPlanDetail, deleteLocation, updatePlan } from "@/api/plan.js"
+import {
+  getPlanDayDetail,
+  getPlanDetail,
+  deleteLocation,
+  updatePlan,
+  deletePlan,
+} from "@/api/plan.js";
 import ReviewWriteModal from "@/components/Review/ReviewWriteModal.vue";
-import draggable from 'vuedraggable'
-import _ from 'lodash';
+import draggable from "vuedraggable";
+import _ from "lodash";
+import contentColor from "@/constant/contentColor";
 
 export default {
   name: "PlanDetail",
@@ -125,10 +180,41 @@ export default {
       map: null,
       markers: [],
       openWriteReviewModal: false,
-      contentId:'',
+      contentId: "",
       drag: false,
       ployline: null,
+      contentColor,
     };
+  },
+
+  created() {
+    const planId = this.$route.params.planId;
+
+    getPlanDetail(planId, ({ data }) => {
+      this.plan = data;
+      this.calcDay();
+    });
+
+    getPlanDayDetail(planId, 1, ({ data }) => {
+      this.dayLocations = data;
+    });
+  },
+  updated() {
+    this.$nextTick(function () {
+      if (this.dayLocations.length) {
+        if (!window.kakao || !window.kakao.maps) {
+          const script = document.createElement("script");
+          script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
+          script.addEventListener("load", () => {
+            kakao.maps.load(this.initMap);
+          });
+
+          document.head.appendChild(script);
+        } else {
+          this.initMap();
+        }
+      }
+    });
   },
   methods: {
     calcDay() {
@@ -149,16 +235,23 @@ export default {
       this.isModifying = !this.isModifying;
 
       if (this.isModifying) {
-        this.modifiedLocations = this.dayLocations.map((location) => _.cloneDeep(location));
+        this.modifiedLocations = this.dayLocations.map((location) =>
+          _.cloneDeep(location)
+        );
       } else {
         // console.log(this.plan, this.modifiedLocations);
 
-        updatePlan({
-          ...this.plan,
-          locations: this.modifiedLocations.map((location, index) => ({...location, order: index + 1})),
-        }, () => {
-          this.dayLocations = this.modifiedLocations;
-        },
+        updatePlan(
+          {
+            ...this.plan,
+            locations: this.modifiedLocations.map((location, index) => ({
+              ...location,
+              order: index + 1,
+            })),
+          },
+          () => {
+            this.dayLocations = this.modifiedLocations;
+          },
           (error) => {
             console.log(error);
           }
@@ -170,7 +263,6 @@ export default {
 
       getPlanDayDetail(planId, idx, ({ data }) => {
         this.dayLocations = data;
-        this.displayMarkers();
       });
     },
     initMap() {
@@ -181,17 +273,7 @@ export default {
       };
       this.map = new kakao.maps.Map(container, options);
 
-      const planId = this.$route.params.planId;
-
-      getPlanDetail(planId, ({ data }) => {
-        this.plan = data;
-        this.calcDay();
-      });
-
-      getPlanDayDetail(planId, 1, ({ data }) => {
-        this.dayLocations = data;
-        this.displayMarkers();
-      });
+      this.displayMarkers();
     },
 
     displayMarkers() {
@@ -242,17 +324,20 @@ export default {
         );
 
       this.polyline = new kakao.maps.Polyline({
-        path: this.dayLocations.map(({attraction: {latitude, longitude}}) => new kakao.maps.LatLng(latitude, longitude)),
+        path: this.dayLocations.map(
+          ({ attraction: { latitude, longitude } }) =>
+            new kakao.maps.LatLng(latitude, longitude)
+        ),
         strokeWeight: 5, // 선의 두께 입니다
-        strokeColor: '#FFAE00', // 선의 색깔입니다
+        strokeColor: "#FFAE00", // 선의 색깔입니다
         strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-        strokeStyle: 'solid' // 선의 스타일입니다
-      })
+        strokeStyle: "solid", // 선의 스타일입니다
+      });
 
       this.map.setBounds(bounds);
       this.polyline.setMap(this.map);
 
-      console.log('before', this.polyline);
+      console.log("before", this.polyline);
       this.markers = temp;
     },
     onClickDeleteLocation(id) {
@@ -275,22 +360,18 @@ export default {
     },
     closeWriteReviewModal() {
       this.openWriteReviewModal = false;
-      this.contentId = '';
+      this.contentId = "";
+    },
+    removePlan() {
+      deletePlan(this.plan.id, () => {
+        this.$router.push("/plan");
+      });
+    },
+    moveAttractionDetail(contentId) {
+      this.$router.push({ name: "attraction", params: { contentId } });
     },
   },
-  mounted() {
-    if (!window.kakao || !window.kakao.maps) {
-      const script = document.createElement("script");
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAOMAP_KEY}`;
-      script.addEventListener("load", () => {
-        kakao.maps.load(this.initMap);
-      });
-
-      document.head.appendChild(script);
-    } else {
-      this.initMap();
-    }
-  },
+  mounted() {},
   filters: {
     dateFormat(value) {
       if (!value) {
@@ -299,10 +380,11 @@ export default {
 
       return (
         value.substring(0, 4) +
-        "." +
+        "년 " +
         value.substring(5, 7) +
-        "." +
-        value.substring(8, 10)
+        "월 " +
+        value.substring(8, 10) +
+        "일"
       );
     },
   },
@@ -322,78 +404,86 @@ export default {
   height: 0px;
 }
 
-.plan-detail-header {
-  margin: 30px;
-  justify-content: center;
-  display: flex;
-}
-
-.travel-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f5f5f5;
-  padding: 16px;
-  margin-bottom: 16px;
-  margin: 0.5rem 0;
-  padding: 3rem 1.5rem;
-  background: white;
-  border-radius: 20px;
-  width: 600px;
-}
-
-.image-container {
-  flex: 0 0 30%;
-  margin-right: 16px;
-}
-
-.trip-image {
-  width: 200px;
-  height: 200px;
-  border-radius: 100px;
-}
-
-.info-container {
-  flex: 1;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.description {
-  font-size: 16px;
-  color: #888;
-  margin-bottom: 16px;
-}
-
-.actions {
-  display: flex;
-}
-
-.edit-btn {
-  background-color: #4caf50;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-.remove-btn {
-  background-color: #F5483C;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  margin-right: 8px;
-  cursor: pointer;
-}
-
 .btn:last-child {
   margin-right: 0;
 }
 
+.shadow {
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
+}
 
+.plan-item-container {
+  display: flex;
+  justify-content: center;
+}
+
+.plan-item {
+  height: fit-content;
+  margin: 0;
+  padding: 1rem 0.9rem;
+  background: white;
+  border-radius: 20px;
+  justify-content: space-between;
+  display: inline-block;
+}
+
+.removeBtn {
+  color: #de4343;
+}
+
+.editBtn {
+  color: #3f42db;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.button-box {
+  width: 50px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+  height: 50px;
+}
+
+.plan-item-header {
+  width: 580px;
+  height: 150px;
+  display: flex;
+}
+
+.plan-info {
+  width: 480px;
+  height: 130px;
+  display: flex;
+  position: relative;
+}
+
+.plan-info img {
+  width: 110px;
+  height: 110px;
+  border-radius: 25px;
+  margin-right: 20px;
+}
+
+.plan-info-content {
+  margin-top: 23px;
+}
+
+.plan-title {
+  text-overflow: ellipsis;
+}
+
+.attraction-title {
+  cursor: pointer;
+}
 </style>

@@ -92,6 +92,6 @@ export default {
   width: 40%;
   height: 100vh;
   top: 10px;
-  margin: 30px;
+  margin: 30px 80px 30px 30px;
 }
 </style>

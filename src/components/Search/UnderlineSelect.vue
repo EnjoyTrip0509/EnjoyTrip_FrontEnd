@@ -66,7 +66,7 @@ export default {
 .select {
   position: relative;
   font-family: "KBO-Dia-Gothic_bold";
-  font-size: 34px;
+  font-size: 50px;
   border: solid 2px transparent;
   border-bottom: solid 2px #111;
   padding: 12px 10px 5px 0;
@@ -95,6 +95,10 @@ export default {
 
 .hide {
   display: none;
+}
+
+ul {
+  z-index: 130;
 }
 
 li {

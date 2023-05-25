@@ -68,7 +68,7 @@ export default {
 <style scoped>
 .container {
   width: 568px;
-  height: 650px;
+  height: 660px;
   position: fixed;
   background-color: #ffffff;
   z-index: 100;

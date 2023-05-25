@@ -17,6 +17,7 @@
           :length="calculatePageNo"
           rounded="circle"
           @input="onClickPage"
+          :total-visible="7"
         ></v-pagination>
       </div>
       <search-result-map></search-result-map>
@@ -76,6 +77,7 @@ export default {
 .search-container {
   display: flex;
   width: 100%;
+  margin-top: 50px;
 }
 
 .attraction-grid {
