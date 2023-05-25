@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     movePrev() {
-      EventBus.$emit("modifyMyInfo");
+      EventBus.$emit("moveToMyInfoStep");
     },
     moveNext() {
       checkPassword(
