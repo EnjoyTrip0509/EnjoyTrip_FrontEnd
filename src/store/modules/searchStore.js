@@ -20,7 +20,8 @@ const searchStore = {
     },
     getters: {
         positions: (state) => {
-            return state.searchResults.map(({ title, latitude, longitude }) => ({ title, latitude, longitude }));
+            console.log(state.searchResults);
+            return state.searchResults.map(({ title, latitude, longitude, contentTypeId }) => ({ title, latitude, longitude, contentTypeId }));
         }
     },
     mutations: {
