@@ -15,7 +15,11 @@
 
       <div class="register-section">
         <span class="text-h5 mb-4 mypage-title">회원가입</span>
-        <v-text-field label="아이디" v-model="user.id"></v-text-field>
+        <v-text-field
+          label="아이디"
+          v-model="id"
+          :error-messages="errors"
+        ></v-text-field>
         <v-text-field
           label="비밀번호"
           type="password"
@@ -41,7 +45,7 @@
 import { mapActions } from "vuex";
 import EventBus from "@/util/EventBus.js";
 import ProfileMenuItem from "@/components/ProfileMenuItem.vue";
-import { register } from "@/api/user.js";
+import { checkId, register } from "@/api/user.js";
 
 const userStore = "userStore";
 
@@ -52,15 +56,33 @@ export default {
   },
   data() {
     return {
+      id: "",
       user: {
-        id: "",
         password: "",
         name: "",
         email: "",
       },
       message: "",
       dialog: false,
+      errors: [],
     };
+  },
+  watch: {
+    id(val) {
+      checkId(
+        val,
+        ({ status }) => {
+          if (status === 202) {
+            this.errors = [];
+          }
+        },
+        ({ response: { status } }) => {
+          if (status === 409) {
+            this.errors = ["중복된 아이디가 존재합니다."];
+          }
+        }
+      );
+    },
   },
   created() {
     EventBus.$on("showRegisterDialog", this.showRegisterDialog);
@@ -68,7 +90,12 @@ export default {
   methods: {
     ...mapActions(userStore, ["loginUser"]),
     onRegister() {
-      if (this.user.id === "") {
+      if (this.errors.length) {
+        this.message = "중복된 아이디가 존재합니다.";
+        return;
+      }
+
+      if (this.id === "") {
         this.message = "아이디를 입력해주세요.";
         return;
       }
@@ -89,7 +116,7 @@ export default {
       }
 
       register(
-        this.user,
+        { ...this.user, id: this.id },
         () => {
           alert("회원가입에 성공하였습니다!");
           EventBus.$emit("closeDialog");
